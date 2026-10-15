@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JetLag & Global Rota Ultimate Pro</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PWA Meta Etiketleri -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="JetLag Pro">
+    <meta name="theme-color" content="#09090b">
+</head>
+<body id="pageBody" class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans transition-colors duration-500 relative overflow-x-hidden">
+
+    <!-- SAĞ ÜST KÖŞE: Hamburger Menü Butonu -->
+    <button onclick="toggleDrawer()" class="fixed top-6 right-6 z-50 bg-slate-900/90 backdrop-blur-md p-3.5 rounded-2xl border border-slate-700 shadow-2xl text-slate-200 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
+        <span class="text-lg">☰</span>
+        <span class="text-xs font-semibold uppercase tracking-wider hidden sm:inline">Pro Araçlar</span>
+    </button>
+
+    <!-- SAĞDAN AÇILIR PRO ARAÇLAR ÇEKMECESİ (DRAWER) -->
+    <div id="proDrawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-slate-900/95 backdrop-blur-2xl border-l border-slate-800 p-6 z-50 transform translate-x-full transition-transform duration-300 overflow-y-auto shadow-2xl space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+            <h3 class="font-bold text-white text-base flex items-center gap-2"><span>🛠️</span> Pro Seyahat Araçları</h3>
+            <button onclick="toggleDrawer()" class="text-slate-400 hover:text-white text-xl font-bold px-2 py-1 rounded-xl bg-slate-800/50">✕</button>
+        </div>
+
+        <!-- 1. PWA & Offline Durum Paneli -->
+        <div class="bg-indigo-950/40 border border-indigo-500/40 p-4 rounded-2xl space-y-3">
+            <h4 class="font-bold text-indigo-300 text-xs uppercase tracking-wider flex items-center gap-2"><span>📱</span> Çevrimdışı (Offline) Mod</h4>
+            <p id="connectionStatus" class="text-xs text-indigo-200/90">Durum kontrol ediliyor...</p>
+            <button id="installAppBtn" onclick="installPWA()" class="hidden w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30">
+                📲 Uygulamayı Cihaza Yükle
+            </button>
+        </div>
+
+        <!-- 2. Canlı Hava Durumu Widget'ı -->
+        <div class="bg-sky-950/30 border border-sky-500/30 p-4 rounded-2xl space-y-2">
+            <h4 class="font-bold text-sky-300 text-xs uppercase tracking-wider flex items-center gap-2"><span>🌤️</span> Canlı Hava Durumu (Varış)</h4>
+            <div id="weatherWidget" class="text-xs text-sky-200/90">Rota seçildikten sonra hava durumu yüklenir...</div>
+        </div>
+
+        <!-- 3. Tüm 160+ Dünya Para Birimini İçeren Döviz Dönüştürücü -->
+        <div class="bg-emerald-950/30 border border-emerald-500/30 p-4 rounded-2xl space-y-3">
+            <h4 class="font-bold text-emerald-300 text-xs uppercase tracking-wider flex items-center gap-2"><span>💱</span> Global Döviz Dönüştürücü (160+ Birim)</h4>
+            <div class="flex items-center gap-2">
+                <input type="number" id="convAmount" value="100" oninput="convertCurrency()" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
+                <select id="convFrom" onchange="convertCurrency()" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
+                    <option value="TRY">TRY</option>
+                </select>
+            </div>
+            <div class="flex items-center justify-between text-xs text-emerald-200/90 pt-1">
+                <span>Hedef Para Birimi:</span>
+                <select id="convTo" onchange="convertCurrency()" class="bg-slate-900 border border-slate-700 rounded-xl px-2 py-1 text-xs text-white focus:outline-none">
+                    <option value="USD">USD</option>
+                </select>
+            </div>
+            <div id="convResult" class="text-xs font-bold text-white text-center bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+                Kurlar yükleniyor...
+            </div>
+        </div>
+
+        <!-- 4. Uçuş Bilgileri & PNR Kartı -->
+        <div class="bg-indigo-950/30 border border-indigo-500/30 p-4 rounded-2xl space-y-3">
+            <h4 class="font-bold text-indigo-300 text-xs uppercase tracking-wider flex items-center gap-2"><span>✈️</span> Uçuş & Koltuk (PNR) Kartı</h4>
+            <div class="grid grid-cols-2 gap-2">
+                <input type="text" id="flightNumber" oninput="saveFlightInfo()" placeholder="Uçuş No (Örn: TK1986)" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <input type="text" id="pnrCode" oninput="saveFlightInfo()" placeholder="PNR (Örn: X7K9LP)" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+            </div>
+            <input type="text" id="seatNumber" oninput="saveFlightInfo()" placeholder="Koltuk No (Örn: 12A - Cam Kenarı)" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <!-- 5. Günlük Seyahat Günlüğü (Travel Journal) -->
+        <div class="bg-purple-950/30 border border-purple-500/30 p-4 rounded-2xl space-y-2">
+            <h4 class="font-bold text-purple-300 text-xs uppercase tracking-wider flex items-center gap-2"><span>📔</span> Günlük Seyahat Notları / Anılar</h4>
+            <textarea id="travelJournal" oninput="safeSetItem('jetlag_journal', this.value)" rows="3" placeholder="Bugün harika bir restoran keşfettim, not al..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-purple-500 transition"></textarea>
+        </div>
+
+        <!-- 6. Acil Durum & Konsolosluk Bilgi Paneli -->
+        <div class="bg-rose-950/30 border border-rose-500/30 p-4 rounded-2xl space-y-2">
+            <h4 class="font-bold text-rose-300 text-xs uppercase tracking-wider flex items-center gap-2"><span>🚨</span> Acil Durum & Konsolosluk</h4>
+            <div class="text-xs text-rose-200/90 space-y-1">
+                <div>• Genel Acil / Polis: <strong class="text-white">112 / 911 (Yerel)</strong></div>
+                <div>• T.C. Dışişleri Çağrı Merkezi: <strong class="text-white">+90 312 292 29 29</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ARKAPLAN KARARTMA PERDESİ -->
+    <div id="drawerOverlay" onclick="toggleDrawer()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden transition-opacity"></div>
+
+    <!-- ANA KUTU -->
+    <div class="bg-slate-900/90 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl w-full max-w-2xl border border-slate-800 my-8 z-10">
+        <!-- Başlık -->
+        <div class="text-center mb-6">
+            <span class="text-4xl mb-2 inline-block">✈️</span>
+            <h1 class="text-3xl font-black tracking-tight text-white bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">JetLag & Global Rota</h1>
+            <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-semibold">Ultimate Elite Seyahat & Biyolojik Uyum Asistanı</p>
+        </div>
+
+        <!-- Canlı Dünya Saatleri & Tarih Barı -->
+        <div class="mb-6 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/80 flex items-center justify-around text-center">
+            <div>
+                <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold" id="fromClockLabel">Kalkış</span>
+                <span id="fromLiveClock" class="text-sm font-bold text-cyan-300 block">--:--:--</span>
+                <span id="fromLiveDate" class="text-[10px] text-slate-400 block mt-0.5">--.--.----</span>
+            </div>
+            <div class="h-8 w-px bg-slate-700"></div>
+            <div>
+                <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold" id="toClockLabel">Varış</span>
+                <span id="toLiveClock" class="text-sm font-bold text-indigo-300 block">--:--:--</span>
+                <span id="toLiveDate" class="text-[10px] text-slate-400 block mt-0.5">--.--.----</span>
+            </div>
+        </div>
+
+        <!-- Canlı Geri Sayım Widget'ı -->
+        <div class="mb-6 bg-indigo-950/40 p-4 rounded-2xl border border-indigo-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="text-xs text-indigo-200 font-medium">⏳ Seyahat Tarihine Kalan:</div>
+            <div class="flex items-center gap-2">
+                <input type="date" id="flightDate" onchange="saveSettings()" class="bg-slate-900 border border-indigo-500/40 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none">
+                <div id="countdownTimer" class="text-xs font-bold text-cyan-300 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800">Tarih Seçin</div>
+            </div>
+        </div>
+        
+        <div class="space-y-6">
+            <!-- Akıllı Arama Havalimanı Seçimi (Tek Yön / Normal Mod) -->
+            <div id="singleRouteSection" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 relative">
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Kalkış Havalimanı:</label>
+                    <input type="text" id="fromSearch" placeholder="9000+ pistte ara (Örn: IST, SAB)..." oninput="filterAirports('from')" onfocus="showDropdown('from')" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500 transition font-medium" autocomplete="off">
+                    <input type="hidden" id="fromAirport" value="IST|İstanbul Havalimanı (IST)|3|41.27|28.75">
+                    <div id="fromDropdown" class="absolute left-4 right-4 top-20 bg-slate-900 border border-slate-700 rounded-xl max-h-48 overflow-y-auto z-50 hidden shadow-2xl divide-y divide-slate-800"></div>
+                </div>
+
+                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 relative">
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Varış Havalimanı:</label>
+                    <input type="text" id="toSearch" placeholder="9000+ pistte ara (Örn: HND, BRR)..." oninput="filterAirports('to')" onfocus="showDropdown('to')" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500 transition font-medium" autocomplete="off">
+                    <input type="hidden" id="toAirport" value="HND|Tokyo Haneda (HND)|9|35.54|139.77">
+                    <div id="toDropdown" class="absolute left-4 right-4 top-20 bg-slate-900 border border-slate-700 rounded-xl max-h-48 overflow-y-auto z-50 hidden shadow-2xl divide-y divide-slate-800"></div>
+                </div>
+            </div>
+
+            <!-- MULTI-CITY (ÇOK DURAKLI) ROTA VE SAAT SEÇENEĞİ -->
+            <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="block text-xs font-bold uppercase tracking-wider text-indigo-400">🌐 Multi-City (Çok Duraklı) Dünya Turu</span>
+                        <span class="text-[11px] text-slate-400">Her bacak için havalimanı ve uçuş saatini ayrı ayrı belirle.</span>
+                    </div>
+                    <input type="checkbox" id="multiCityToggle" onchange="toggleMultiCity()" class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0 w-5 h-5 cursor-pointer">
+                </div>
+                
+                <div id="multiCityContainer" class="hidden space-y-3 pt-2 border-t border-slate-700/50">
+                    <div id="legsList" class="space-y-3"></div>
+                    <button onclick="addLeg()" class="w-full bg-slate-800 hover:bg-slate-700 text-indigo-300 font-semibold py-2.5 rounded-xl text-xs uppercase tracking-wider transition border border-slate-700">
+                        + Yeni Durak & Uçuş Saati Ekle
+                    </button>
+                </div>
+            </div>
+
+            <!-- Ayarlar -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60">
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Uçuş Saati:</label>
+                    <input type="time" id="flightDepTime" value="10:00" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition font-medium">
+                </div>
+
+                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60">
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Kalış (Gün):</label>
+                    <input type="number" id="tripDays" value="5" min="1" max="15" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition font-medium">
+                </div>
+
+                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60">
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Kronotipin:</label>
+                    <select id="chronotype" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition font-medium">
+                        <option value="morning">🌅 Sabah</option>
+                        <option value="neutral" selected>⚖️ Dengeli</option>
+                        <option value="night">🌙 Gece</option>
+                    </select>
+                </div>
+
+                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60">
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Uçuş Sınıfı:</label>
+                    <select id="flightClass" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition font-medium">
+                        <option value="economy" selected>💺 Ekonomi</option>
+                        <option value="business">🛋️ Business</option>
+                        <option value="first">👑 First</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Dönüş Rotası Ekleme Seçeneği -->
+            <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 flex items-center justify-between">
+                <div>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-indigo-400">🔄 Dönüş Rotası Simülasyonu</span>
+                    <span class="text-[11px] text-slate-400">Tatil dönüşü eve dönüş uyum takvimini de rapora ekle.</span>
+                </div>
+                <input type="checkbox" id="includeReturn" onchange="saveSettings()" class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0 w-5 h-5 cursor-pointer">
+            </div>
+
+            <button onclick="generatePlan()" class="w-full bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-bold py-4 rounded-2xl transition duration-200 shadow-xl shadow-indigo-600/20 text-base tracking-wide">
+                Ultimate Rota Analizini Başlat 🚀
+            </button>
+        </div>
+
+        <!-- Sonuç Kutusu -->
+        <div id="result" class="mt-8 hidden bg-slate-950/80 p-6 rounded-2xl border border-slate-800 space-y-6">
+            <div id="routeBanner" class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-500/30 text-indigo-200 font-bold text-center text-lg flex items-center justify-center gap-2"></div>
+
+            <!-- Jet Lag Şiddeti Skoru & Uçuş Süresi Kartı -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-blue-950/40 border border-blue-500/30 p-4 rounded-2xl flex items-center justify-between gap-2">
+                    <div>
+                        <h3 class="font-bold text-blue-300 text-xs">⚡ Jet Lag Risk Skoru:</h3>
+                        <p id="severityText" class="text-[11px] text-blue-200/80 mt-0.5">Hesaplanıyor...</p>
+                    </div>
+                    <div id="severityScore" class="text-xl font-black text-cyan-400 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-800">-%</div>
+                </div>
+
+                <div class="bg-indigo-950/40 border border-indigo-500/30 p-4 rounded-2xl flex items-center justify-between gap-2">
+                    <div>
+                        <h3 class="font-bold text-indigo-300 text-xs">✈️ Tahmini Uçuş Süresi:</h3>
+                        <p id="flightDurationText" class="text-[11px] text-indigo-200/80 mt-0.5">Mesafe analizi tamamlandı</p>
+                    </div>
+                    <div id="flightDurationBadge" class="text-sm font-black text-indigo-300 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-800">- Saat</div>
+                </div>
+            </div>
+
+            <!-- Uçuş İçi Akıllı Uyku Reçetesi -->
+            <div class="bg-purple-950/40 border border-purple-500/40 p-4 rounded-2xl space-y-2">
+                <h3 class="font-bold text-purple-300 flex items-center gap-2 text-base">
+                    <span>✈️💤</span> Uçuş İçi Akıllı Uyku Süresi Reçetesi:
+                </h3>
+                <div id="flightSleepPrescription" class="text-sm space-y-1 text-purple-200/90"></div>
+            </div>
+
+            <!-- Sirkadiyen Egzersiz Protokolü -->
+            <div class="bg-teal-950/40 border border-teal-500/40 p-4 rounded-2xl space-y-2">
+                <h3 class="font-bold text-teal-300 flex items-center gap-2 text-base">
+                    <span>🏃‍♂️🧘‍♀️</span> Sirkadiyen Adaptasyon & Egzersiz Protokolü:
+                </h3>
+                <div id="exerciseProtocol" class="text-sm space-y-1.5 text-teal-200/90"></div>
+            </div>
+
+            <!-- Günlük Enerji & Adaptasyon Takipçisi -->
+            <div class="bg-teal-950/30 border border-teal-500/30 p-4 rounded-2xl space-y-3">
+                <h3 class="font-bold text-teal-300 flex items-center gap-2 text-base">
+                    <span>📈</span> Günlük Enerji & Adaptasyon Takipçisi (Check-in):
+                </h3>
+                <p class="text-xs text-teal-200/80">Seyahat boyunca her gün kendini nasıl hissettiğini puanla (1: Çok Yorgun, 10: Zinde):</p>
+                <div id="dailyCheckInContainer" class="space-y-2"></div>
+            </div>
+
+            <!-- Uçuş Öncesi Uyku Protokolü -->
+            <div class="bg-purple-950/30 border border-purple-500/30 p-4 rounded-2xl space-y-2">
+                <h3 class="font-bold text-purple-300 flex items-center gap-2 text-base">
+                    <span>🌙</span> Uçuş Öncesi Uyku Kaydırma Takvimi:
+                </h3>
+                <div id="preFlightShift" class="text-sm space-y-1 text-purple-200/90"></div>
+            </div>
+
+            <!-- Melatonin & Takviye Alarmı -->
+            <div class="bg-pink-950/30 border border-pink-500/30 p-4 rounded-2xl space-y-2">
+                <h3 class="font-bold text-pink-300 flex items-center gap-2 text-base">
+                    <span>💊</span> Melatonin & Sirkadiyen Takviye Planı:
+                </h3>
+                <div id="melatoninPlan" class="text-sm space-y-1.5 text-pink-200/90"></div>
+            </div>
+
+            <!-- Hidratasyon Kutusu -->
+            <div class="bg-cyan-950/30 border border-cyan-500/30 p-4 rounded-2xl space-y-2">
+                <h3 class="font-bold text-cyan-300 flex items-center gap-2 text-base">
+                    <span>💧</span> Uçuş İçi Hidratasyon (Su) Reçinesi:
+                </h3>
+                <div id="hydrationPlan" class="text-sm space-y-1 text-cyan-200/90"></div>
+            </div>
+
+            <!-- Kafein & Alkol Alarm Kutusu -->
+            <div class="bg-amber-950/30 border border-amber-500/30 p-4 rounded-2xl space-y-2">
+                <h3 class="font-bold text-amber-300 flex items-center gap-2 text-base">
+                    <span>☕⚠️</span> Kafein & Alkol Kesinti Alarmları:
+                </h3>
+                <div id="caffeineAlerts" class="text-sm space-y-1.5 text-amber-200/90"></div>
+            </div>
+
+            <!-- Dönüş Rotası Planı -->
+            <div id="returnTripSection" class="hidden bg-indigo-950/30 border border-indigo-500/30 p-4 rounded-2xl space-y-2">
+                <h3 class="font-bold text-indigo-300 flex items-center gap-2 text-base">
+                    <span>🔄</span> Dönüş Rotası (Eve Dönüş) Uyum Takvimi:
+                </h3>
+                <div id="returnTripPlan" class="text-sm space-y-1 text-indigo-200/90"></div>
+            </div>
+
+            <!-- Kişisel Seyahat / İlaç Notları Paneli -->
+            <div class="bg-violet-950/30 border border-violet-500/30 p-4 rounded-2xl space-y-2">
+                <h3 class="font-bold text-violet-300 flex items-center gap-2 text-base">
+                    <span>📝</span> Kişisel Seyahat & İlaç Notları (Hafızada Kalır):
+                </h3>
+                <textarea id="customTravelNotes" oninput="safeSetItem('jetlag_custom_notes', this.value)" rows="3" placeholder="Örn: Tansiyon ilacımı saat 09:00'da almalıyım..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-violet-500 transition"></textarea>
+            </div>
+
+            <!-- Uçuş İçi DVT & Esneme Rehberi -->
+            <div class="bg-rose-950/30 border border-rose-500/30 p-4 rounded-2xl space-y-2">
+                <h3 class="font-bold text-rose-300 flex items-center gap-2 text-base">
+                    <span>🧘‍♂️</span> Uçuş İçi DVT (Kan Dolaşımı) & Esneme Rehberi:
+                </h3>
+                <div class="text-sm space-y-1.5 text-rose-200/90">
+                    <div>• <strong>Bilek Rotasyonu:</strong> Ayak bileklerinizi saat yönünde ve tersine her saat 10 kez döndürün.</div>
+                    <div>• <strong>Topuk-Parmak Ucu:</strong> Otururken topuklarınızı kaldırıp parmak uçlarınızda yükselin, ardından tersini yapın.</div>
+                    <div>• <strong>Diz Çekme:</strong> Her bacağınızı sırayla göğsünüze doğru çekerek 10 saniye tutun.</div>
+                </div>
+            </div>
+
+            <!-- Gelişmiş Akıllı Valiz Listesi -->
+            <div class="bg-emerald-950/30 border border-emerald-500/30 p-4 rounded-2xl space-y-2">
+                <h3 class="font-bold text-emerald-300 flex items-center gap-2 text-base">
+                    <span>🧳</span> Şehre Özel Genişletilmiş Akıllı Valiz Listesi:
+                </h3>
+                <div id="packingList" class="text-sm space-y-1.5 text-emerald-200/90"></div>
+            </div>
+
+            <div class="space-y-3">
+                <h3 class="font-bold text-slate-200 flex items-center gap-2 text-base border-b border-slate-800 pb-2">
+                    <span>⏱️</span> Uçuş İçi Zaman Çizelgesi:
+                </h3>
+                <div id="flightTimeline" class="space-y-2 text-sm text-slate-300"></div>
+            </div>
+
+            <div class="space-y-3">
+                <h3 class="font-bold text-slate-200 flex items-center gap-2 text-base border-b border-slate-800 pb-2">
+                    <span>🧬</span> Vücut Saati Ayar Rehberi:
+                </h3>
+                <ul id="planList" class="text-sm space-y-2.5 list-disc list-inside text-slate-300"></ul>
+            </div>
+
+            <div class="space-y-3">
+                <h3 id="cityScheduleTitle" class="font-bold text-slate-200 flex items-center gap-2 text-base border-b border-slate-800 pb-2">
+                    <span>🗺️</span> Şehir Keşif Programı:
+                </h3>
+                <div id="tripSchedule" class="space-y-3 text-sm text-slate-300"></div>
+            </div>
+
+            <!-- VİRAL PAYLAŞIM ALANI -->
+            <div class="bg-indigo-950/50 border border-indigo-500/40 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                <div>
+                    <h4 class="font-bold text-indigo-200 text-xs flex items-center justify-center sm:justify-start gap-1.5"><span>🌐</span> Bu Siteyi Beğendin mi?</h4>
+                    <p class="text-[11px] text-indigo-300/80 mt-0.5">Seyahat edecek bir arkadaşına göndererek ona da jet lag'i atlatsana!</p>
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button onclick="shareApp()" class="flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30">
+                        🔗 Arkadaşına Öner
+                    </button>
+                </div>
+            </div>
+
+            <!-- Butonlar Grubu -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
+                <button onclick="copyPlan()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-3 rounded-xl text-xs uppercase tracking-wider transition border border-slate-700">
+                    📋 Panoya Kopyala
+                </button>
+                <button onclick="shareOnWhatsApp()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-semibold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-600/20">
+                    💬 WhatsApp ile Paylaş
+                </button>
+                <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-600/20">
+                    🖨️ PDF İndir / Yazdır
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SAĞ ALT KÖŞE: Tema Değiştirici -->
+    <div class="fixed bottom-4 right-4 bg-slate-900/90 backdrop-blur-md p-3 rounded-2xl border border-slate-700 shadow-2xl flex items-center gap-2 z-50">
+        <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Tema:</span>
+        <button onclick="setTheme('slate')" class="w-6 h-6 rounded-full bg-black border-2 border-slate-600 hover:scale-110 transition" title="Zifiri Siyah"></button>
+        <button onclick="setTheme('indigo')" class="w-6 h-6 rounded-full bg-indigo-950 border-2 border-indigo-500 hover:scale-110 transition" title="Gece Mavisi"></button>
+        <button onclick="setTheme('emerald')" class="w-6 h-6 rounded-full bg-emerald-900 border-2 border-emerald-500 hover:scale-110 transition" title="Koyu Orman"></button>
+        <button onclick="setTheme('purple')" class="w-6 h-6 rounded-full bg-purple-900 border-2 border-purple-500 hover:scale-110 transition" title="Kozmik Mor"></button>
+    </div>
+
+    <script>
+        let airports = [];
+        let exchangeRates = {};
+        let deferredPrompt = null;
+
+        let multiCityLegs = [
+            { code: "IST", name: "İstanbul Havalimanı (IST)", offset: 3, lat: 41.27, lon: 28.75, depTime: "10:00" },
+            { code: "LHR", name: "London Heathrow (LHR)", offset: 0, lat: 51.47, lon: -0.45, depTime: "15:00" }
+        ];
+
+        // Bağlantı Durumu Göstergesi
+        function updateConnectionStatus() {
+            const statusEl = document.getElementById('connectionStatus');
+            if (navigator.onLine) {
+                statusEl.innerHTML = `<span class="text-emerald-400 font-bold">🟢 Çevrimiçi (Online):</span> Tüm veriler güncel ve senkronize.`;
+            } else {
+                statusEl.innerHTML = `<span class="text-amber-400 font-bold">📴 Çevrimdışı (Offline):</span> Uçuş modundasın; önbelleğe alınan 9.000+ havalimanı ve kurlar devrede!`;
+            }
+        }
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const btn = document.getElementById('installAppBtn');
+            if(btn) btn.classList.remove('hidden');
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        document.getElementById('installAppBtn').classList.add('hidden');
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                alert("Tarayıcınızın menüsünden (⋮) 'Ana Ekrana Ekle' veya 'Uygulama Yükle' seçeneğini kullanarak uygulamayı kurabilirsiniz.");
+            }
+        }
+
+        // Güçlendirilmiş Service Worker (Çevrimdışı Tam Destek)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    const CACHE_NAME = 'jetlag-pro-v1';
+                    self.addEventListener('install', e => {
+                        e.waitUntil(self.skipWaiting());
+                    });
+                    self.addEventListener('activate', e => {
+                        e.waitUntil(self.clients.claim());
+                    });
+                    self.addEventListener('fetch', e => {
+                        e.respondWith(
+                            fetch(e.request).catch(() => caches.match(e.request))
+                        );
+                    });
+                `;
+                const blob = new Blob([swCode], { type: 'text/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+                navigator.serviceWorker.register(swUrl).catch(() => {});
+            });
+        }
+
+        // HAVALİMANLARINI ÇEKME VE LOCALSTORAGE OFFLINE ÖNBELLEKLEME
+        async function loadAllAirports() {
+            try {
+                let res = await fetch('https://raw.githubusercontent.com/mwgg/Airports/master/airports.json');
+                let data = await res.json();
+                let airportArray = Array.isArray(data) ? data : Object.values(data);
+
+                airports = airportArray.map(a => {
+                    let lon = parseFloat(a.lon) || 0;
+                    let lat = parseFloat(a.lat) || 0;
+                    let calculatedOffset = Math.round(lon / 15);
+                    let code = (a.iata || a.code || '').toUpperCase();
+                    return {
+                        code: code,
+                        name: `${a.name || 'Havalimanı'} (${code}) - ${a.city || a.state || ''}`,
+                        offset: calculatedOffset,
+                        lat: lat,
+                        lon: lon
+                    };
+                }).filter(a => a.code && a.code.length === 3 && a.name);
+
+                // Çevrimdışı kullanım için hafızaya kaydet
+                safeSetItem('jetlag_cached_airports', JSON.stringify(airports));
+            } catch (e) {
+                // İnternet yoksa önbellekten yükle
+                let cached = safeGetItem('jetlag_cached_airports');
+                if (cached) {
+                    try {
+                        airports = JSON.parse(cached);
+                        console.log(`📴 Çevrimdışı Mod: ${airports.length} havalimanı önbellekten yüklendi.`);
+                    } catch(err) {}
+                }
+                if (airports.length === 0) {
+                    airports = [
+                        { code: "IST", name: "İstanbul Havalimanı (IST) - Istanbul", offset: 3, lat: 41.27, lon: 28.75 },
+                        { code: "SAB", name: "Juancho E. Yrausquin (SAB) - Saba", offset: -4, lat: 17.64, lon: -63.22 },
+                        { code: "BRR", name: "Barra Airport (BRR) - Barra", offset: 0, lat: 57.02, lon: -7.45 }
+                    ];
+                }
+            }
+        }
+
+        // DÖVİZ KURLARINI ÇEKME VE LOCALSTORAGE ÖNBELLEKLEME
+        async function fetchExchangeRates() {
+            try {
+                let res = await fetch('https://open.er-api.com/v6/latest/USD');
+                let data = await res.json();
+                exchangeRates = data.rates;
+                safeSetItem('jetlag_cached_rates', JSON.stringify(exchangeRates));
+                populateCurrencies();
+                convertCurrency();
+            } catch (e) {
+                let cached = safeGetItem('jetlag_cached_rates');
+                if (cached) {
+                    try { exchangeRates = JSON.parse(cached); } catch(err) {}
+                }
+                if (!exchangeRates || Object.keys(exchangeRates).length === 0) {
+                    exchangeRates = { USD: 1, TRY: 36.0, EUR: 0.95, GBP: 0.80, JPY: 155.0 };
+                }
+                populateCurrencies();
+                convertCurrency();
+            }
+        }
+
+        function populateCurrencies() {
+            let fromSelect = document.getElementById('convFrom');
+            let toSelect = document.getElementById('convTo');
+            let currencies = Object.keys(exchangeRates).sort();
+            let fromHtml = '', toHtml = '';
+            
+            currencies.forEach(curr => {
+                let isSelectedFrom = (curr === 'TRY') ? 'selected' : '';
+                let isSelectedTo = (curr === 'USD') ? 'selected' : '';
+                fromHtml += `<option value="${curr}" ${isSelectedFrom}>${curr}</option>`;
+                toHtml += `<option value="${curr}" ${isSelectedTo}>${curr}</option>`;
+            });
+            
+            fromSelect.innerHTML = fromHtml;
+            toSelect.innerHTML = toHtml;
+        }
+
+        function convertCurrency() {
+            let amount = parseFloat(document.getElementById('convAmount').value) || 0;
+            let from = document.getElementById('convFrom').value;
+            let to = document.getElementById('convTo').value;
+            let resultEl = document.getElementById('convResult');
+
+            if (!exchangeRates[from] || !exchangeRates[to]) {
+                resultEl.textContent = "Kurlar hesaplanıyor...";
+                return;
+            }
+
+            let amountInUSD = amount / exchangeRates[from];
+            let converted = amountInUSD * exchangeRates[to];
+            resultEl.textContent = `${amount.toLocaleString()} ${from} = ${converted.toFixed(2)} ${to}`;
+        }
+
+        function toggleMultiCity() {
+            const isChecked = document.getElementById('multiCityToggle').checked;
+            const container = document.getElementById('multiCityContainer');
+            const singleSection = document.getElementById('singleRouteSection');
+            
+            if (isChecked) {
+                container.classList.remove('hidden');
+                singleSection.classList.add('hidden');
+                renderLegs();
+            } else {
+                container.classList.add('hidden');
+                singleSection.classList.remove('hidden');
+            }
+        }
+
+        function renderLegs() {
+            let listEl = document.getElementById('legsList');
+            listEl.innerHTML = '';
+            multiCityLegs.forEach((leg, index) => {
+                let div = document.createElement('div');
+                div.className = "bg-slate-900 p-3 rounded-xl border border-slate-700 space-y-2 text-xs";
+                div.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-indigo-400">Durak ${index + 1}</span>
+                        ${multiCityLegs.length > 2 ? `<button onclick="removeLeg(${index})" class="text-rose-400 hover:text-rose-300 font-bold px-1.5 py-0.5 bg-rose-950/40 rounded-lg">Kaldır</button>` : ''}
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <input type="text" value="${leg.name}" oninput="updateLegName(${index}, this.value)" placeholder="Havalimanı Ara (Örn: JFK)" class="sm:col-span-2 bg-slate-950 border border-slate-700 rounded-lg p-2 text-white focus:outline-none">
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Kalkış Saati:</label>
+                            <input type="time" value="${leg.depTime || '10:00'}" oninput="updateLegTime(${index}, this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-1.5 text-white focus:outline-none">
+                        </div>
+                    </div>
+                `;
+                listEl.appendChild(div);
+            });
+        }
+
+        function addLeg() {
+            multiCityLegs.push({ code: "JFK", name: "New York JFK (JFK)", offset: -5, lat: 40.64, lon: -73.77, depTime: "12:00" });
+            renderLegs();
+        }
+
+        function removeLeg(index) {
+            multiCityLegs.splice(index, 1);
+            renderLegs();
+        }
+
+        function updateLegName(index, val) {
+            let found = airports.find(a => a.name.toLowerCase().includes(val.toLowerCase()) || a.code.toLowerCase() === val.toLowerCase());
+            if (found) {
+                multiCityLegs[index].code = found.code;
+                multiCityLegs[index].name = found.name;
+                multiCityLegs[index].offset = found.offset;
+                multiCityLegs[index].lat = found.lat;
+                multiCityLegs[index].lon = found.lon;
+            }
+        }
+
+        function updateLegTime(index, val) {
+            multiCityLegs[index].depTime = val;
+        }
+
+        function toggleDrawer() {
+            const drawer = document.getElementById('proDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.toggle('translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function safeSetItem(key, value) {
+            try { localStorage.setItem(key, value); } catch (e) {}
+        }
+
+        function safeGetItem(key) {
+            try { return localStorage.getItem(key); } catch (e) { return null; }
+        }
+
+        const cityDatabase = {
+            "istanbul": ["Tarihi Yarımada turu: Ayasofya ve Sultanahmet.", "Topkapı Sarayı ve Eminönü'nde balık-ekmek.", "Galata Kulesi ve Karaköy kafeleri."],
+            "roma": ["Kolezyum ve Roma Forumu.", "Trevi Çeşvesi ve dondurma molası.", "Vatikan ve Sistine Şapeli."],
+            "paris": ["Eyfel Kulesi ve Trocadero.", "Louvre Müzesi.", "Montmartre ve Sacré-Cœur."],
+            "londra": ["Big Ben ve Westminster Abbey.", "London Eye ve Tower Bridge.", "British Museum."],
+            "tokyo": ["Shibuya Crossing ve Hachiko.", "Sensō-ji Tapınağı.", "Akihabara elektronik caddesi."]
+        };
+
+        const flightDurationMatrix = {
+            "IST-LHR": 4, "IST-CDG": 3.5, "IST-FRA": 3, "IST-AMS": 3.5, "IST-FCO": 2.5,
+            "IST-BCN": 3.5, "IST-DXB": 4.5, "IST-JFK": 11, "IST-LAX": 13, "IST-NRT": 11.5, "IST-SIN": 10
+        };
+
+        function getFlightDuration(fromCode, toCode, timeDiff) {
+            let key = `${fromCode}-${toCode}`;
+            if (flightDurationMatrix[key]) return flightDurationMatrix[key];
+            let reverseKey = `${toCode}-${fromCode}`;
+            if (flightDurationMatrix[reverseKey]) return flightDurationMatrix[reverseKey];
+            if (fromCode === toCode) return 0;
+            return Math.max(2, Math.abs(timeDiff) * 1.5 + 2);
+        }
+
+        function showDropdown(type) { filterAirports(type); }
+
+        function filterAirports(type) {
+            const inputVal = document.getElementById(`${type}Search`).value.toLowerCase().trim();
+            const dropdown = document.getElementById(`${type}Dropdown`);
+            dropdown.classList.remove('hidden');
+
+            const queryTokens = inputVal.split(/\s+/);
+            const filtered = airports.filter(a => {
+                const target = (a.name + " " + a.code).toLowerCase();
+                return queryTokens.every(token => target.includes(token));
+            }).slice(0, 30);
+
+            dropdown.innerHTML = '';
+            if (filtered.length === 0) {
+                dropdown.innerHTML = `<div class="p-3 text-xs text-slate-400 text-center">Havalimanı bulunamadı</div>`;
+                return;
+            }
+
+            filtered.forEach(a => {
+                let div = document.createElement('div');
+                div.className = "p-2.5 text-xs text-slate-200 hover:bg-indigo-600/30 cursor-pointer transition flex items-center justify-between";
+                div.innerHTML = `<span>${a.name}</span> <span class="text-indigo-400 font-bold font-mono">${a.code}</span>`;
+                div.onmousedown = (e) => {
+                    e.preventDefault();
+                    selectAirport(type, a);
+                };
+                dropdown.appendChild(div);
+            });
+        }
+
+        function selectAirport(type, airport) {
+            document.getElementById(`${type}Search`).value = airport.name;
+            document.getElementById(`${type}Airport`).value = `${airport.code}|${airport.name}|${airport.offset}|${airport.lat}|${airport.lon}`;
+            document.getElementById(`${type}Dropdown`).classList.add('hidden');
+            saveSettings();
+            if(type === 'to') fetchWeather(airport.lat, airport.lon);
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#fromSearch') && !e.target.closest('#fromDropdown')) {
+                document.getElementById('fromDropdown').classList.add('hidden');
+            }
+            if (!e.target.closest('#toSearch') && !e.target.closest('#toDropdown')) {
+                document.getElementById('toDropdown').classList.add('hidden');
+            }
+        });
+
+        async function fetchWeather(lat, lon) {
+            const weatherEl = document.getElementById('weatherWidget');
+            if(!lat || !lon) return;
+            weatherEl.textContent = "Hava durumu yükleniyor...";
+            try {
+                let res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m`);
+                let data = await res.json();
+                if(data && data.current) {
+                    let temp = data.current.temperature_2m;
+                    weatherEl.innerHTML = `Anlık Sıcaklık: <strong class="text-white text-sm">${temp}°C</strong>.`;
+                } else {
+                    weatherEl.textContent = "Hava durumu alınamadı.";
+                }
+            } catch(e) {
+                weatherEl.textContent = "📴 Çevrimdışı / Hava durumu alınamıyor.";
+            }
+        }
+
+        function updateLiveClocks() {
+            const fromVal = document.getElementById('fromAirport').value.split('|');
+            const toVal = document.getElementById('toAirport').value.split('|');
+            
+            const fromOffset = parseInt(fromVal[2]) || 0;
+            const toOffset = parseInt(toVal[2]) || 0;
+
+            document.getElementById('fromClockLabel').textContent = `${fromVal[1] ? fromVal[1].split(' ')[0] : 'Kalkış'} Saati`;
+            document.getElementById('toClockLabel').textContent = `${toVal[1] ? toVal[1].split(' ')[0] : 'Varış'} Saati`;
+
+            const now = new Date();
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+
+            const fromDate = new Date(utc + (3600000 * fromOffset));
+            const toDate = new Date(utc + (3600000 * toOffset));
+
+            document.getElementById('fromLiveClock').textContent = fromDate.toLocaleTimeString('tr-TR');
+            document.getElementById('fromLiveDate').textContent = fromDate.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'short' });
+
+            document.getElementById('toLiveClock').textContent = toDate.toLocaleTimeString('tr-TR');
+            document.getElementById('toLiveDate').textContent = toDate.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'short' });
+        }
+
+        setInterval(updateLiveClocks, 1000);
+
+        function updateCountdown() {
+            const flightDateVal = document.getElementById('flightDate').value;
+            const timerEl = document.getElementById('countdownTimer');
+            if (!flightDateVal) {
+                timerEl.textContent = "Tarih Seçin";
+                return;
+            }
+            const diff = new Date(flightDateVal) - new Date();
+            if (diff <= 0) {
+                timerEl.textContent = "Uçuş Vakti Geldi! ✈️";
+                return;
+            }
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            timerEl.textContent = `${days} gün ${hours} saat kaldı`;
+        }
+
+        function saveFlightInfo() {
+            safeSetItem('flight_num', document.getElementById('flightNumber').value);
+            safeSetItem('flight_pnr', document.getElementById('pnrCode').value);
+            safeSetItem('flight_seat', document.getElementById('seatNumber').value);
+        }
+
+        function saveSettings() {
+            safeSetItem('jetlag_from', document.getElementById('fromAirport').value);
+            safeSetItem('jetlag_from_text', document.getElementById('fromSearch').value);
+            safeSetItem('jetlag_to', document.getElementById('toAirport').value);
+            safeSetItem('jetlag_to_text', document.getElementById('toSearch').value);
+            safeSetItem('jetlag_dep_time', document.getElementById('flightDepTime').value);
+            safeSetItem('jetlag_days', document.getElementById('tripDays').value);
+            safeSetItem('jetlag_date', document.getElementById('flightDate').value);
+            safeSetItem('jetlag_chronotype', document.getElementById('chronotype').value);
+            safeSetItem('jetlag_class', document.getElementById('flightClass').value);
+            safeSetItem('jetlag_return', document.getElementById('includeReturn').checked);
+            updateCountdown();
+            updateLiveClocks();
+        }
+
+        async function loadSettings() {
+            updateConnectionStatus();
+            await Promise.all([loadAllAirports(), fetchExchangeRates()]);
+
+            if (safeGetItem('jetlag_from')) {
+                document.getElementById('fromAirport').value = safeGetItem('jetlag_from');
+                if (safeGetItem('jetlag_from_text')) document.getElementById('fromSearch').value = safeGetItem('jetlag_from_text');
+            } else {
+                document.getElementById('fromSearch').value = "İstanbul Havalimanı (IST)";
+            }
+            if (safeGetItem('jetlag_to')) {
+                document.getElementById('toAirport').value = safeGetItem('jetlag_to');
+                if (safeGetItem('jetlag_to_text')) document.getElementById('toSearch').value = safeGetItem('jetlag_to_text');
+                let parts = safeGetItem('jetlag_to').split('|');
+                if(parts[3] && parts[4]) fetchWeather(parts[3], parts[4]);
+            } else {
+                document.getElementById('toSearch').value = "Tokyo Haneda (HND)";
+            }
+            if (safeGetItem('jetlag_dep_time')) document.getElementById('flightDepTime').value = safeGetItem('jetlag_dep_time');
+            if (safeGetItem('jetlag_days')) document.getElementById('tripDays').value = safeGetItem('jetlag_days');
+            if (safeGetItem('jetlag_chronotype')) document.getElementById('chronotype').value = safeGetItem('jetlag_chronotype');
+            if (safeGetItem('jetlag_class')) document.getElementById('flightClass').value = safeGetItem('flight_class');
+            if (safeGetItem('jetlag_return') === 'true') document.getElementById('includeReturn').checked = true;
+            if (safeGetItem('jetlag_custom_notes')) document.getElementById('customTravelNotes').value = safeGetItem('jetlag_custom_notes');
+            if (safeGetItem('jetlag_journal')) document.getElementById('travelJournal').value = safeGetItem('jetlag_journal');
+            if (safeGetItem('flight_num')) document.getElementById('flightNumber').value = safeGetItem('flight_num');
+            if (safeGetItem('flight_pnr')) document.getElementById('pnrCode').value = safeGetItem('flight_pnr');
+            if (safeGetItem('flight_seat')) document.getElementById('seatNumber').value = safeGetItem('flight_seat');
+            
+            if (safeGetItem('jetlag_date')) {
+                document.getElementById('flightDate').value = safeGetItem('jetlag_date');
+                updateCountdown();
+            }
+            if (safeGetItem('jetlag_theme')) {
+                setTheme(safeGetItem('jetlag_theme'), false);
+            }
+            updateLiveClocks();
+        }
+
+        function setTheme(themeName, save = true) {
+            const body = document.getElementById('pageBody');
+            body.className = "text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans transition-colors duration-500 relative overflow-x-hidden";
+            
+            if (themeName === 'slate') body.classList.add('bg-black');
+            else if (themeName === 'indigo') body.classList.add('bg-slate-950');
+            else if (themeName === 'emerald') body.classList.add('bg-emerald-950');
+            else if (themeName === 'purple') body.classList.add('bg-purple-950');
+
+            if (save) safeSetItem('jetlag_theme', themeName);
+        }
+
+        function addHours(timeStr, hoursToAdd) {
+            let [h, m] = timeStr.split(':').map(Number);
+            let totalMins = h * 60 + m + Math.round(hoursToAdd * 60);
+            let newH = Math.floor(totalMins / 60) % 24;
+            if (newH < 0) newH += 24;
+            let newM = Math.abs(totalMins % 60);
+            return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
+        }
+
+        function generatePlan() {
+            saveSettings();
+
+            const isMultiCity = document.getElementById('multiCityToggle').checked;
+            
+            let fromName, toName, hourDiff, absDiff, isEast, flightHours, arrTime;
+            
+            if (isMultiCity) {
+                let totalDiff = 0;
+                let totalFlight = 0;
+                let routeString = multiCityLegs.map(l => `${l.code} (${l.depTime})`).join(' ➔ ');
+                
+                for(let i = 0; i < multiCityLegs.length - 1; i++) {
+                    let diff = multiCityLegs[i+1].offset - multiCityLegs[i].offset;
+                    totalDiff += diff;
+                    totalFlight += getFlightDuration(multiCityLegs[i].code, multiCityLegs[i+1].code, diff);
+                }
+                
+                fromName = multiCityLegs[0].name;
+                toName = multiCityLegs[multiCityLegs.length - 1].name;
+                hourDiff = totalDiff;
+                absDiff = Math.abs(hourDiff);
+                isEast = hourDiff > 0;
+                flightHours = totalFlight;
+                arrTime = "Çok Duraklı Varış";
+                
+                document.getElementById('routeBanner').innerHTML = `<span>🌐 Multi-City Rota:</span> ${routeString}`;
+            } else {
+                const fromVal = document.getElementById('fromAirport').value;
+                const toVal = document.getElementById('toAirport').value;
+                const depTimeInput = document.getElementById('flightDepTime').value || "10:00";
+                
+                const fromData = fromVal ? fromVal.split('|') : ["IST", "İstanbul Havalimanı (IST)", "3"];
+                const toData = toVal ? toVal.split('|') : ["SAB", "Juancho E. Yrausquin (SAB)", "-4"];
+                
+                const fromCode = fromData[0];
+                fromName = fromData[1];
+                const fromOffset = parseInt(fromData[2]) || 0;
+
+                const toCode = toData[0];
+                toName = toData[1];
+                const toOffset = parseInt(toData[2]) || 0;
+                
+                hourDiff = toOffset - fromOffset;
+                absDiff = Math.abs(hourDiff);
+                isEast = hourDiff > 0;
+                flightHours = getFlightDuration(fromCode, toCode, hourDiff);
+
+                let [depH, depM] = depTimeInput.split(':').map(Number);
+                const depTimeInUTC = depH - fromOffset;
+                const arrTimeInUTC = depTimeInUTC + flightHours;
+                let calculatedArrLocalHour = (arrTimeInUTC + toOffset) % 24;
+                if (calculatedArrLocalHour < 0) calculatedArrLocalHour += 24;
+                arrTime = `${String(Math.floor(calculatedArrLocalHour)).padStart(2, '0')}:00`;
+
+                let directionDesc = hourDiff === 0 ? "Aynı Saat Dilimi" : (isEast ? `${absDiff} Saat İleri (Doğuya Rota)` : `${absDiff} Saat Geri (Batıya Rota)`);
+                document.getElementById('routeBanner').innerHTML = `<span>✈️</span> ${fromName} ➔ ${toName} <span class="text-xs bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-full border border-indigo-500/30 ml-2">${directionDesc}</span>`;
+            }
+
+            const chronotype = document.getElementById('chronotype').value;
+            const flightClass = document.getElementById('flightClass').value;
+            const includeReturn = document.getElementById('includeReturn').checked;
+            const tripDays = parseInt(document.getElementById('tripDays').value) || 3;
+
+            const severityScore = document.getElementById('severityScore');
+            const severityText = document.getElementById('severityText');
+            const flightDurationText = document.getElementById('flightDurationText');
+            const flightDurationBadge = document.getElementById('flightDurationBadge');
+            const dailyCheckInContainer = document.getElementById('dailyCheckInContainer');
+            const preFlightShift = document.getElementById('preFlightShift');
+            const melatoninPlan = document.getElementById('melatoninPlan');
+            const hydrationPlan = document.getElementById('hydrationPlan');
+            const caffeineAlerts = document.getElementById('caffeineAlerts');
+            const flightSleepPrescription = document.getElementById('flightSleepPrescription');
+            const exerciseProtocol = document.getElementById('exerciseProtocol');
+            const returnTripSection = document.getElementById('returnTripSection');
+            const returnTripPlan = document.getElementById('returnTripPlan');
+            const packingList = document.getElementById('packingList');
+            const flightTimeline = document.getElementById('flightTimeline');
+            const planList = document.getElementById('planList');
+            const tripSchedule = document.getElementById('tripSchedule');
+            const cityScheduleTitle = document.getElementById('cityScheduleTitle');
+            
+            flightDurationBadge.textContent = `~${flightHours} Saat`;
+            flightDurationText.textContent = isMultiCity ? `Toplam Rota Süresi ve Duraklar` : `Kalkış: 10:00 | Varış: ~${arrTime}`;
+
+            let risk = absDiff * 9 + (isEast ? 15 : 5);
+            if (isMultiCity) risk += 20;
+            if (chronotype === 'night' && isEast) risk += 15;
+            if (flightClass === 'business') risk -= 10;
+            if (flightClass === 'first') risk -= 20;
+            if (risk < 0) risk = 5;
+            if (risk > 100) risk = 100;
+            if (hourDiff === 0) risk = 0;
+
+            severityScore.textContent = `%${risk}`;
+            if (risk < 30) severityText.textContent = `${flightClass.toUpperCase()} konforuyla hafif adaptasyon!`;
+            else if (risk < 70) severityText.textContent = "Orta şiddet, protokollere dikkat et.";
+            else severityText.textContent = "Yüksek risk! Biyolojik saat ciddi sarsılacak.";
+
+            dailyCheckInContainer.innerHTML = '';
+            for (let i = 1; i <= tripDays; i++) {
+                let checkKey = `daily_check_${i}`;
+                let savedVal = safeGetItem(checkKey) || '5';
+
+                let row = document.createElement('div');
+                row.className = "flex items-center justify-between bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 text-xs";
+                row.innerHTML = `
+                    <span class="font-semibold text-teal-200">Gün ${i} Enerji Seviyesi:</span>
+                    <div class="flex items-center gap-2">
+                        <input type="range" min="1" max="10" value="${savedVal}" onchange="safeSetItem('${checkKey}', this.value); document.getElementById('val_${i}').textContent = this.value;" class="accent-teal-500 cursor-pointer">
+                        <span id="val_${i}" class="font-bold text-cyan-300 w-4 text-center">${savedVal}</span>
+                    </div>
+                `;
+                dailyCheckInContainer.appendChild(row);
+            }
+
+            preFlightShift.innerHTML = '';
+            melatoninPlan.innerHTML = '';
+            hydrationPlan.innerHTML = '';
+            caffeineAlerts.innerHTML = '';
+            packingList.innerHTML = '';
+            flightTimeline.innerHTML = '';
+            planList.innerHTML = '';
+            tripSchedule.innerHTML = '';
+            
+            let targetCityShort = toName.split(' ')[0];
+            cityScheduleTitle.innerHTML = `<span>🗺️</span> ${targetCityShort} İçin ${tripDays} Günlük Zenginleştirilmiş Program:`;
+
+            let sleepRec = "";
+            if (isEast) {
+                let targetSleepHours = Math.min(flightHours - 2, 6);
+                sleepRec = `<div>• <strong>Doğuya Rota (Zorlu Uyum):</strong> Uçuş boyunca en az <strong>${Math.max(2, targetSleepHours)} saat</strong> derin uyku uyu ve göz maskeni tak.</div>`;
+            } else if (hourDiff < 0) {
+                sleepRec = `<div>• <strong>Batıya Rota (Avantajlı):</strong> Varış yerindeki gece uykusunu kaçırmamak için uçakta <strong>en fazla 2 saat</strong> kestir.</div>`;
+            } else {
+                sleepRec = `<div>• <strong>Aynı Zaman Dilimi:</strong> Normal uyku düzenini koruyabilirsin.</div>`;
+            }
+            flightSleepPrescription.innerHTML = sleepRec;
+
+            let exerciseRec = `
+                <div>• <strong>Sabah Işığı Yürüyüşü:</strong> Varış gününden sonraki ilk sabah, uyanır uyanmaz dışarıda 15-20 dakika yürüyüş yap.</div>
+                <div>• <strong>Sirkadiyen Reset:</strong> 4-7-8 nefes egzersizi ile sinir sistemini sakinleştir.</div>
+            `;
+            exerciseProtocol.innerHTML = exerciseRec;
+
+            let shiftText = isEast ? "30 dakika erken yat / erken kalk" : "45 dakika geç yat / geç kalk";
+            preFlightShift.innerHTML = `<div>• <strong>Uçuştan 3 Gün Önce:</strong> Uyku saatini her gece <strong>${shiftText}</strong> kaydır.</div>`;
+
+            let melatoninTime = isEast ? "Yatmadan 1 saat önce (Yerel saatle 22:00)" : "Varış akşamı yerel saatle 23:00";
+            
+            melatoninPlan.innerHTML = `
+                <div>• <strong>Optimal Zamanlama:</strong> ${melatoninTime} 1-3mg düşük doz alınabilir.</div>
+                <div>• <strong>Süreç:</strong> Vücudun yeni saat dilimine uyum sağlamasına destek olmak amacıyla ilk 3 gün kullanılabilir.</div>
+                <div class="mt-3 p-3 bg-amber-950/60 border border-amber-500/50 rounded-xl text-amber-200/90 text-xs flex items-start gap-2.5 shadow-inner">
+                    <span class="text-base">⚠️</span>
+                    <div>
+                        <strong class="text-amber-100 block mb-0.5">Önemli Tıbbi Uyarı & Sorumluluk Reddi:</strong>
+                        Melatonin bir hormon takviyesidir. Herhangi bir kronik rahatsızlığınız, hamilelik veya emzirme durumunuz varsa ya da düzenli reçeteli ilaçlar kullanıyorsanız, <strong>mutlaka doktorunuza veya eczacınıza başvurun</strong>. Bilinçsiz kullanım yan etkilere yol açabilir.
+                    </div>
+                </div>
+            `;
+
+            let waterAmount = absDiff > 5 ? "2.5 Litre (Her saat başı 250 ml)" : "1.8 Litre";
+            hydrationPlan.innerHTML = `<div>• <strong>Önerilen Su Miktarı:</strong> En az <strong>${waterAmount}</strong> tüket.</div>`;
+
+            let caffeineStopTime = addHours(arrTime, -6);
+            caffeineAlerts.innerHTML = `<div>• <strong>Kafein Kesintisi:</strong> Yerel saatle <strong>${caffeineStopTime}</strong> sonrasında kafeini kes.</div>`;
+
+            if (includeReturn) {
+                returnTripSection.classList.remove('hidden');
+                returnTripPlan.innerHTML = `<div>• <strong>Dönüş Rotası:</strong> Eve dönmeden önceki son gece uyku saatini 45 dakika kaydır.</div>`;
+            } else {
+                returnTripSection.classList.add('hidden');
+            }
+
+            let items = [
+                "Pasaport, Vizeler & Uçuş Biletleri",
+                "Uçuş İçi Boyun Yastığı & Göz Maskesi",
+                "Gürültü Önleyici Kulak Tıkacı",
+                "Elektrolit Tozu / Multivitamin",
+                `${targetCityShort} uyumlu Priz Adaptörü`,
+                "Powerbank & Şarj Kabloları",
+                "Kompresyon Varis Çorabı",
+                "Kişisel Reçeteli İlaçlar"
+            ];
+
+            items.forEach((item, index) => {
+                let storageKey = `packing_item_${index}`;
+                let isChecked = safeGetItem(storageKey) === 'true';
+
+                let div = document.createElement('label');
+                div.className = "flex items-center gap-2 cursor-pointer hover:text-white transition";
+                div.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''} onchange="safeSetItem('${storageKey}', this.checked)" class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0 w-4 h-4"> <span>${item}</span>`;
+                packingList.appendChild(div);
+            });
+
+            let timelineSteps = [
+                { time: "Kalkıştan Sonra İlk 1 Saat", action: "Saatini hemen varış yerinin yerel saatine sabitle ve ilk bardak suyunu iç." },
+                { time: "Uçuşun Ortası", action: isEast ? "Kabin ışıkları kararınca uyu." : "Uykun gelse bile diren." },
+                { time: "İnişe 2 Kala", action: "Bol su tüketimine odaklan." }
+            ];
+
+            timelineSteps.forEach(step => {
+                let box = document.createElement('div');
+                box.className = "bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-1";
+                box.innerHTML = `<span class="font-semibold text-indigo-400 text-xs uppercase">${step.time}</span> <span class="text-slate-300">${step.action}</span>`;
+                flightTimeline.appendChild(box);
+            });
+
+            let recommendations = [];
+            if (hourDiff === 0) recommendations.push(`Aynı saat dilimi.`);
+            else if (isEast) recommendations.push(`Biyolojik Baskı (${absDiff} Saat İleri): Sabah gün ışığını mutlaka al.`);
+            else recommendations.push(`Avantajlı Rota (${absDiff} Saat Geri): Geç yatmak vücuduna kolay gelecektir.`);
+
+            recommendations.forEach(rec => {
+                let li = document.createElement('li');
+                li.innerHTML = rec;
+                planList.appendChild(li);
+            });
+
+            let fullToText = toName.toLowerCase();
+            let cityActivities = null;
+            for (let key in cityDatabase) {
+                if (fullToText.includes(key)) {
+                    cityActivities = cityDatabase[key];
+                    break;
+                }
+            }
+
+            let fallbackPool = [
+                "Şehrin tarihi ara sokaklarında keşif yürüyüşü.",
+                "Popüler bir yerel müze veya sanat galerisi turu.",
+                "Panoramik tepeden kuş bakışı şehir manzarası.",
+                "Geleneksel pazarları ve esnaf dükkanlarını gezip tatları deneme."
+            ];
+
+            for (let i = 1; i <= tripDays; i++) {
+                let dayBox = document.createElement('div');
+                dayBox.className = "bg-slate-900/80 p-3.5 rounded-xl border border-slate-800";
+                let dayText = (cityActivities && cityActivities[i - 1]) ? cityActivities[i - 1] : fallbackPool[(i - 1) % fallbackPool.length];
+                dayBox.innerHTML = `<strong>Gün ${i}:</strong> ${dayText}`;
+                tripSchedule.appendChild(dayBox);
+            }
+
+            document.getElementById('result').classList.remove('hidden');
+        }
+
+        function copyPlan() {
+            let text = `JetLag & Ultimate Pro Rota Raporu:\n\n`;
+            document.querySelectorAll('#result div, #result li').forEach((el) => {
+                if(el.innerText) text += `${el.innerText}\n`;
+            });
+            navigator.clipboard.writeText(text);
+            alert('Ultimate rapor panoya kopyalandı! 📋');
+        }
+
+        function shareOnWhatsApp() {
+            let text = `✈️ JetLag & Ultimate Rota Planım:\n\n`;
+            document.querySelectorAll('#result div, #result li').forEach((el) => {
+                if(el.innerText) text += `${el.innerText}\n`;
+            });
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function shareApp() {
+            const shareText = "✈️ Jet lag derdine son! Bu akıllı seyahat asistanıyla biyolojik saatini mükemmel şekilde ayarla:";
+            const shareUrl = window.location.href;
+            if (navigator.share) {
+                navigator.share({ title: 'JetLag & Global Rota', text: shareText, url: shareUrl }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+                alert('Site linki ve davet mesajı kopyalandı! 📋');
+            }
+        }
+
+        window.onload = loadSettings;
+    </script>
+</body>
+</html>
