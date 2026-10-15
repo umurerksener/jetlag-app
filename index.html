@@ -11,8 +11,39 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="JetLag Pro">
     <meta name="theme-color" content="#09090b">
+    <style>
+        /* Google Çeviri Widget Özelleştirmeleri */
+        .goog-te-combo {
+            background-color: #0f172a !important;
+            color: #f1f5f9 !important;
+            border: 1px solid #334155 !important;
+            padding: 5px 8px !important;
+            border-radius: 12px !important;
+            outline: none !important;
+            font-size: 12px !important;
+            font-family: inherit !important;
+        }
+        .goog-logo-link, .goog-te-banner-frame, .goog-te-gadget span {
+            display: none !important;
+        }
+        .goog-te-gadget {
+            color: transparent !important;
+            font-size: 0px !important;
+        }
+        body {
+            top: 0px !important;
+        }
+        .goog-tooltip { display: none !important; }
+        .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+    </style>
 </head>
 <body id="pageBody" class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans transition-colors duration-500 relative overflow-x-hidden">
+
+    <!-- SOL ÜST KÖŞE: Google Çeviri (Tüm Diller) -->
+    <div class="fixed top-6 left-6 z-50 bg-slate-900/90 backdrop-blur-md px-3 py-2 rounded-2xl border border-slate-700 shadow-2xl flex items-center gap-2">
+        <span class="text-xs">🌐</span>
+        <div id="google_translate_element"></div>
+    </div>
 
     <!-- SAĞ ÜST KÖŞE: Hamburger Menü Butonu -->
     <button onclick="toggleDrawer()" class="fixed top-6 right-6 z-50 bg-slate-900/90 backdrop-blur-md p-3.5 rounded-2xl border border-slate-700 shadow-2xl text-slate-200 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
@@ -378,6 +409,18 @@
         <button onclick="setTheme('emerald')" class="w-6 h-6 rounded-full bg-emerald-900 border-2 border-emerald-500 hover:scale-110 transition" title="Koyu Orman"></button>
         <button onclick="setTheme('purple')" class="w-6 h-6 rounded-full bg-purple-900 border-2 border-purple-500 hover:scale-110 transition" title="Kozmik Mor"></button>
     </div>
+
+    <!-- Google Çeviri Widget Scripti -->
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'tr', 
+        includedLanguages: 'tr,en,es,de,fr,ar,ru,ja,zh-CN,it,pt',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script>
         let airports = [];
