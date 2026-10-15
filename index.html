@@ -39,7 +39,7 @@
 </head>
 <body id="pageBody" class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans transition-colors duration-500 relative overflow-x-hidden">
 
-    <!-- SOL ÜST KÖŞE: Google Çeviri (Tüm Diller) -->
+    <!-- SOL ÜST KÖŞE: Google Çeviri (Dünyadaki Tüm Diller) -->
     <div class="fixed top-6 left-6 z-50 bg-slate-900/90 backdrop-blur-md px-3 py-2 rounded-2xl border border-slate-700 shadow-2xl flex items-center gap-2">
         <span class="text-xs">🌐</span>
         <div id="google_translate_element"></div>
@@ -410,12 +410,11 @@
         <button onclick="setTheme('purple')" class="w-6 h-6 rounded-full bg-purple-900 border-2 border-purple-500 hover:scale-110 transition" title="Cosmic Purple"></button>
     </div>
 
-    <!-- Google Çeviri Widget Scripti (Ana Dil İngilizce) -->
+    <!-- Google Çeviri Widget Scripti (Tüm Diller Açık) -->
     <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
         pageLanguage: 'en', 
-        includedLanguages: 'en,tr,es,de,fr,ar,ru,ja,zh-CN,it,pt',
         layout: google.translate.TranslateElement.InlineLayout.SIMPLE
       }, 'google_translate_element');
     }
@@ -832,7 +831,7 @@
             if (safeGetItem('jetlag_dep_time')) document.getElementById('flightDepTime').value = safeGetItem('jetlag_dep_time');
             if (safeGetItem('jetlag_days')) document.getElementById('tripDays').value = safeGetItem('jetlag_days');
             if (safeGetItem('jetlag_chronotype')) document.getElementById('chronotype').value = safeGetItem('jetlag_chronotype');
-            if (safeGetItem('jetlag_class')) document.getElementById('flightClass').value = safeGetItem('flight_class');
+            if (safeGetItem('jetlag_class')) document.getElementById('flightClass').value = safeGetItem('jetlag_class');
             if (safeGetItem('jetlag_return') === 'true') document.getElementById('includeReturn').checked = true;
             if (safeGetItem('jetlag_custom_notes')) document.getElementById('customTravelNotes').value = safeGetItem('jetlag_custom_notes');
             if (safeGetItem('jetlag_journal')) document.getElementById('travelJournal').value = safeGetItem('jetlag_journal');
