@@ -6,43 +6,56 @@
     <title>JetLag & Global Rota Ultimate Pro</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Vercel Web Analytics -->
+    <script defer src="/_vercel/insights/script.js"></script>
     <!-- PWA Meta Etiketleri -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="JetLag Pro">
     <meta name="theme-color" content="#09090b">
     <style>
-        /* Google Çeviri Widget Özelleştirmeleri */
-        .goog-te-combo {
-            background-color: #0f172a !important;
-            color: #f1f5f9 !important;
-            border: 1px solid #334155 !important;
-            padding: 5px 8px !important;
-            border-radius: 12px !important;
-            outline: none !important;
-            font-size: 12px !important;
-            font-family: inherit !important;
-        }
-        .goog-logo-link, .goog-te-banner-frame, .goog-te-gadget span {
+        /* Google Çeviri Arka Plan & Mobil Kasma Engelleyici Özelleştirmeler */
+        .goog-logo-link, .goog-te-banner-frame, .skiptranslate, #goog-gt-tt, .goog-te-balloon-frame, .goog-tooltip {
             display: none !important;
-        }
-        .goog-te-gadget {
-            color: transparent !important;
-            font-size: 0px !important;
         }
         body {
             top: 0px !important;
+            position: static !important;
+            -webkit-tap-highlight-color: transparent;
         }
-        .goog-tooltip { display: none !important; }
-        .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+        .goog-text-highlight {
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        /* Özel Kaydırma Çubuğu */
+        #langListContainer::-webkit-scrollbar { width: 5px; }
+        #langListContainer::-webkit-scrollbar-track { background: #0f172a; border-radius: 8px; }
+        #langListContainer::-webkit-scrollbar-thumb { background: #334155; border-radius: 8px; }
     </style>
 </head>
 <body id="pageBody" class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans transition-colors duration-500 relative overflow-x-hidden">
 
-    <!-- SOL ÜST KÖŞE: Google Çeviri (Dünyadaki Tüm Diller) -->
-    <div class="fixed top-6 left-6 z-50 bg-slate-900/90 backdrop-blur-md px-3 py-2 rounded-2xl border border-slate-700 shadow-2xl flex items-center gap-2">
-        <span class="text-xs">🌐</span>
-        <div id="google_translate_element"></div>
+    <!-- SOL ÜST KÖŞE: Modern Aramalı 100+ Dil Seçici (Mobil Takılmasız - notranslate Zırhlı) -->
+    <div id="langWidgetWrapper" class="fixed top-6 left-6 z-50 notranslate" translate="no">
+        <button onclick="toggleLangModal()" class="bg-slate-900/90 backdrop-blur-md px-3.5 py-2.5 rounded-2xl border border-slate-700 hover:border-indigo-500/60 shadow-2xl flex items-center gap-2 text-slate-200 hover:text-white transition active:scale-95">
+            <span class="text-sm">🌐</span>
+            <span id="currentLangLabel" class="text-xs font-semibold tracking-wide max-w-[110px] truncate">Language</span>
+            <span class="text-[10px] text-slate-400">▼</span>
+        </button>
+
+        <!-- Açılır Dil Arama Kutusu -->
+        <div id="langModal" class="hidden mt-2 w-72 sm:w-80 bg-slate-900/95 backdrop-blur-2xl border border-slate-700 rounded-2xl shadow-2xl p-3">
+            <div class="flex items-center gap-2 bg-slate-950 rounded-xl px-3 py-2 mb-2 border border-slate-800 focus-within:border-indigo-500 transition">
+                <span class="text-slate-400 text-xs">🔍</span>
+                <input id="langSearchInput" type="text" placeholder="Dil ara... (Türkçe, English, 日本語)" oninput="renderLangList(this.value)" class="w-full bg-transparent text-white text-xs focus:outline-none placeholder-slate-500" autocomplete="off">
+                <button onclick="toggleLangModal()" class="text-slate-400 hover:text-white text-xs px-1">✕</button>
+            </div>
+            <div id="langListContainer" class="max-h-60 overflow-y-auto space-y-1 pr-1" style="-webkit-overflow-scrolling: touch;"></div>
+        </div>
+
+        <!-- Gizli Google Çeviri Çekirdeği -->
+        <div id="google_translate_element" class="hidden"></div>
     </div>
 
     <!-- SAĞ ÜST KÖŞE: Hamburger Menü Butonu -->
@@ -78,17 +91,17 @@
             <h4 class="font-bold text-emerald-300 text-xs uppercase tracking-wider flex items-center gap-2"><span>💱</span> Global Currency Converter (160+ Currencies)</h4>
             <div class="flex items-center gap-2">
                 <input type="number" id="convAmount" value="100" oninput="convertCurrency()" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
-                <select id="convFrom" onchange="convertCurrency()" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
+                <select id="convFrom" onchange="convertCurrency()" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 notranslate" translate="no">
                     <option value="USD">USD</option>
                 </select>
             </div>
             <div class="flex items-center justify-between text-xs text-emerald-200/90 pt-1">
                 <span>Target Currency:</span>
-                <select id="convTo" onchange="convertCurrency()" class="bg-slate-900 border border-slate-700 rounded-xl px-2 py-1 text-xs text-white focus:outline-none">
+                <select id="convTo" onchange="convertCurrency()" class="bg-slate-900 border border-slate-700 rounded-xl px-2 py-1 text-xs text-white focus:outline-none notranslate" translate="no">
                     <option value="EUR">EUR</option>
                 </select>
             </div>
-            <div id="convResult" class="text-xs font-bold text-white text-center bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+            <div id="convResult" class="text-xs font-bold text-white text-center bg-slate-900/60 p-2.5 rounded-xl border border-slate-800 notranslate" translate="no">
                 Loading rates...
             </div>
         </div>
@@ -124,6 +137,12 @@
 
     <!-- ANA KUTU -->
     <div class="bg-slate-900/90 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl w-full max-w-2xl border border-slate-800 my-8 z-10">
+        
+        <!-- B2B Partner Banner (?partner=SirketAdi parametresiyle otomatik açılır) -->
+        <div id="b2bPartnerBanner" class="hidden mb-6 bg-gradient-to-r from-indigo-600/30 to-cyan-600/30 border border-indigo-400/40 rounded-2xl p-3 text-center text-xs text-indigo-100 font-medium shadow-lg">
+            ✨ Official Smart Flight & Circadian Assistant provided by <strong id="b2bPartnerName" class="text-white underline"></strong>
+        </div>
+
         <!-- Başlık -->
         <div class="text-center mb-6">
             <span class="text-4xl mb-2 inline-block">✈️</span>
@@ -132,7 +151,7 @@
         </div>
 
         <!-- Canlı Dünya Saatleri & Tarih Barı (Çeviriye Karşı Korumalı: notranslate) -->
-        <div class="mb-6 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/80 flex items-center justify-around text-center notranslate">
+        <div class="mb-6 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/80 flex items-center justify-around text-center notranslate" translate="no">
             <div>
                 <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold" id="fromClockLabel">Departure</span>
                 <span id="fromLiveClock" class="text-sm font-bold text-cyan-300 block">--:--:--</span>
@@ -147,7 +166,7 @@
         </div>
 
         <!-- Canlı Geri Sayım Widget'ı (Çeviriye Karşı Korumalı: notranslate) -->
-        <div class="mb-6 bg-indigo-950/40 p-4 rounded-2xl border border-indigo-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 notranslate">
+        <div class="mb-6 bg-indigo-950/40 p-4 rounded-2xl border border-indigo-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 notranslate" translate="no">
             <div class="text-xs text-indigo-200 font-medium">⏳ Time Until Trip:</div>
             <div class="flex items-center gap-2">
                 <input type="date" id="flightDate" onchange="saveSettings()" class="bg-slate-900 border border-indigo-500/40 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none">
@@ -160,16 +179,16 @@
             <div id="singleRouteSection" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 relative">
                     <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Departure Airport:</label>
-                    <input type="text" id="fromSearch" placeholder="Search 9000+ airports (e.g., IST, JFK)..." oninput="filterAirports('from')" onfocus="showDropdown('from')" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500 transition font-medium" autocomplete="off">
+                    <input type="text" id="fromSearch" placeholder="Search 9000+ airports (e.g., IST, JFK)..." oninput="filterAirports('from')" onfocus="showDropdown('from')" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500 transition font-medium notranslate" translate="no" autocomplete="off">
                     <input type="hidden" id="fromAirport" value="IST|Istanbul Airport (IST)|3|41.27|28.75">
-                    <div id="fromDropdown" class="absolute left-4 right-4 top-20 bg-slate-900 border border-slate-700 rounded-xl max-h-48 overflow-y-auto z-50 hidden shadow-2xl divide-y divide-slate-800"></div>
+                    <div id="fromDropdown" class="absolute left-4 right-4 top-20 bg-slate-900 border border-slate-700 rounded-xl max-h-48 overflow-y-auto z-50 hidden shadow-2xl divide-y divide-slate-800 notranslate" translate="no"></div>
                 </div>
 
                 <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 relative">
                     <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Arrival Airport:</label>
-                    <input type="text" id="toSearch" placeholder="Search 9000+ airports (e.g., NRT, LHR)..." oninput="filterAirports('to')" onfocus="showDropdown('to')" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500 transition font-medium" autocomplete="off">
+                    <input type="text" id="toSearch" placeholder="Search 9000+ airports (e.g., NRT, LHR)..." oninput="filterAirports('to')" onfocus="showDropdown('to')" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500 transition font-medium notranslate" translate="no" autocomplete="off">
                     <input type="hidden" id="toAirport" value="NRT|Tokyo Narita (NRT)|9|35.76|140.38">
-                    <div id="toDropdown" class="absolute left-4 right-4 top-20 bg-slate-900 border border-slate-700 rounded-xl max-h-48 overflow-y-auto z-50 hidden shadow-2xl divide-y divide-slate-800"></div>
+                    <div id="toDropdown" class="absolute left-4 right-4 top-20 bg-slate-900 border border-slate-700 rounded-xl max-h-48 overflow-y-auto z-50 hidden shadow-2xl divide-y divide-slate-800 notranslate" translate="no"></div>
                 </div>
             </div>
 
@@ -184,7 +203,7 @@
                 </div>
                 
                 <div id="multiCityContainer" class="hidden space-y-3 pt-2 border-t border-slate-700/50">
-                    <div id="legsList" class="space-y-3"></div>
+                    <div id="legsList" class="space-y-3 notranslate" translate="no"></div>
                     <button onclick="addLeg()" class="w-full bg-slate-800 hover:bg-slate-700 text-indigo-300 font-semibold py-2.5 rounded-xl text-xs uppercase tracking-wider transition border border-slate-700">
                         + Add New Leg & Flight Time
                     </button>
@@ -238,7 +257,7 @@
 
         <!-- Sonuç Kutusu -->
         <div id="result" class="mt-8 hidden bg-slate-950/80 p-6 rounded-2xl border border-slate-800 space-y-6">
-            <div id="routeBanner" class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-500/30 text-indigo-200 font-bold text-center text-lg flex items-center justify-center gap-2"></div>
+            <div id="routeBanner" class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-500/30 text-indigo-200 font-bold text-center text-lg flex items-center justify-center gap-2 flex-wrap"></div>
 
             <!-- Jet Lag Şiddeti Skoru & Uçuş Süresi Kartı -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -247,7 +266,7 @@
                         <h3 class="font-bold text-blue-300 text-xs">⚡ Jet Lag Risk Score:</h3>
                         <p id="severityText" class="text-[11px] text-blue-200/80 mt-0.5">Calculating...</p>
                     </div>
-                    <div id="severityScore" class="text-xl font-black text-cyan-400 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-800">-%</div>
+                    <div id="severityScore" class="text-xl font-black text-cyan-400 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-800 notranslate" translate="no">-%</div>
                 </div>
 
                 <div class="bg-indigo-950/40 border border-indigo-500/30 p-4 rounded-2xl flex items-center justify-between gap-2">
@@ -402,7 +421,7 @@
     </div>
 
     <!-- SAĞ ALT KÖŞE: Tema Değiştirici -->
-    <div class="fixed bottom-4 right-4 bg-slate-900/90 backdrop-blur-md p-3 rounded-2xl border border-slate-700 shadow-2xl flex items-center gap-2 z-50">
+    <div class="fixed bottom-4 right-4 bg-slate-900/90 backdrop-blur-md p-3 rounded-2xl border border-slate-700 shadow-2xl flex items-center gap-2 z-50 notranslate" translate="no">
         <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Theme:</span>
         <button onclick="setTheme('slate')" class="w-6 h-6 rounded-full bg-black border-2 border-slate-600 hover:scale-110 transition" title="Pitch Black"></button>
         <button onclick="setTheme('indigo')" class="w-6 h-6 rounded-full bg-indigo-950 border-2 border-indigo-500 hover:scale-110 transition" title="Midnight Blue"></button>
@@ -410,16 +429,94 @@
         <button onclick="setTheme('purple')" class="w-6 h-6 rounded-full bg-purple-900 border-2 border-purple-500 hover:scale-110 transition" title="Cosmic Purple"></button>
     </div>
 
-    <!-- Google Çeviri Widget Scripti (Tüm Diller Açık) -->
+    <!-- MODERN 100+ DİL ARAMA VE GOOGLE ÇEVİRİ MOTORU -->
     <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'en', 
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-      }, 'google_translate_element');
-    }
+        const LANG_CODES = "en,tr,de,fr,es,it,ru,ar,zh-CN,zh-TW,ja,ko,pt,nl,pl,sv,da,fi,no,el,cs,ro,hu,uk,bg,hr,sr,sk,sl,et,lv,lt,he,hi,bn,pa,ta,te,mr,gu,kn,ml,th,vi,id,ms,tl,fa,ur,az,uz,kk,ky,tg,tk,ka,hy,sq,bs,mk,is,ga,cy,mt,eu,ca,gl,af,sw,zu,xh,am,ha,ig,yo,so,mg,ne,si,km,lo,my,mn,ps,ku,sd,yi,eo,la,jw,su,ceb,hmn,haw,mi,sm,gd,lb,fy,co,be,ny,ht,ig,rw,MG,mt,or,st,sn,so,su,sw,tg,ti,tk,tt,ug,uz,xh,yi,yo,zu".split(",");
+        const uniqueCodes = [...new Set(LANG_CODES.map(c => c.trim()))];
+        const trDisplay = (typeof Intl !== "undefined" && Intl.DisplayNames) ? new Intl.DisplayNames(['tr'], { type: 'language' }) : null;
+        const enDisplay = (typeof Intl !== "undefined" && Intl.DisplayNames) ? new Intl.DisplayNames(['en'], { type: 'language' }) : null;
+
+        const ALL_LANGUAGES = uniqueCodes.map(code => {
+            let trName = code, enName = code;
+            try { if (trDisplay) trName = trDisplay.of(code) || code; } catch(e) {}
+            try { if (enDisplay) enName = enDisplay.of(code) || code; } catch(e) {}
+            return { code, tr: trName, en: enName };
+        }).sort((a, b) => a.en.localeCompare(b.en, 'en'));
+
+        function toggleLangModal() {
+            const modal = document.getElementById('langModal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                const input = document.getElementById('langSearchInput');
+                input.value = '';
+                renderLangList('');
+                if (window.innerWidth > 640) {
+                    setTimeout(() => input.focus(), 50);
+                }
+            }
+        }
+
+        function renderLangList(query = '') {
+            const q = query.toLowerCase().trim();
+            const container = document.getElementById('langListContainer');
+            const filtered = ALL_LANGUAGES.filter(l =>
+                l.tr.toLowerCase().includes(q) ||
+                l.en.toLowerCase().includes(q) ||
+                l.code.toLowerCase().includes(q)
+            );
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-xs text-slate-500 text-center py-4">No language found</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(l => `
+                <button onclick="applyGoogleLanguage('${l.code}', '${l.en.replace(/'/g, "")}')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-indigo-600/20 active:bg-indigo-600/40 text-left text-xs text-slate-200 transition">
+                    <span class="font-medium capitalize">${l.en} <span class="text-[11px] text-slate-400 font-normal">(${l.tr})</span></span>
+                    <span class="text-[10px] uppercase bg-slate-950 border border-slate-800 px-2 py-0.5 rounded-md text-indigo-400 font-mono">${l.code}</span>
+                </button>
+            `).join('');
+        }
+
+        function applyGoogleLanguage(langCode, langLabel) {
+            document.getElementById('currentLangLabel').textContent = langLabel;
+            document.getElementById('langModal').classList.add('hidden');
+            try { localStorage.setItem('jetlag_selected_lang', langLabel); } catch(e) {}
+
+            document.cookie = `googtrans=/en/${langCode}; path=/`;
+            document.cookie = `googtrans=/en/${langCode}; path=/; domain=${window.location.hostname}`;
+
+            const combo = document.querySelector('.goog-te-combo');
+            if (combo) {
+                combo.value = langCode;
+                combo.dispatchEvent(new Event('change'));
+            } else {
+                window.location.reload();
+            }
+        }
+
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element');
+
+            try {
+                const savedLang = localStorage.getItem('jetlag_selected_lang');
+                if (savedLang) document.getElementById('currentLangLabel').textContent = savedLang;
+            } catch(e) {}
+        }
+
+        // Dil kutusu dışına tıklandığında kapatma
+        document.addEventListener('click', (e) => {
+            const wrapper = document.getElementById('langWidgetWrapper');
+            const modal = document.getElementById('langModal');
+            if (wrapper && modal && !wrapper.contains(e.target)) {
+                modal.classList.add('hidden');
+            }
+        });
     </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript" defer src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script>
         let airports = [];
@@ -430,6 +527,18 @@
             { code: "IST", name: "Istanbul Airport (IST)", offset: 3, lat: 41.27, lon: 28.75, depTime: "10:00" },
             { code: "LHR", name: "London Heathrow (LHR)", offset: 0, lat: 51.47, lon: -0.45, depTime: "15:00" }
         ];
+
+        // B2B Partner Modülü (?partner=SirketAdi)
+        (function checkB2BPartner() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const partner = params.get('partner');
+                if (partner) {
+                    document.getElementById('b2bPartnerName').textContent = partner;
+                    document.getElementById('b2bPartnerBanner').classList.remove('hidden');
+                }
+            } catch (e) {}
+        })();
 
         // Bağlantı Durumu Göstergesi
         function updateConnectionStatus() {
@@ -1036,7 +1145,7 @@
             let waterAmount = absDiff > 5 ? "2.5 Liters (250 ml every hour)" : "1.8 Liters";
             hydrationPlan.innerHTML = `<div>• <strong>Recommended Water Amount:</strong> Consume at least <strong>${waterAmount}</strong>.</div>`;
 
-            let caffeineStopTime = addHours(arrTime, -6);
+            let caffeineStopTime = isMultiCity ? "14:00" : addHours(arrTime, -6);
             caffeineAlerts.innerHTML = `<div>• <strong>Caffeine Cutoff:</strong> Stop caffeine consumption after <strong>${caffeineStopTime}</strong> local time.</div>`;
 
             if (includeReturn) {
