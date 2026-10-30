@@ -1,9 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- 
+      NOTE FOR PRODUCTION: Tailwind CDN is used here for rapid prototyping. 
+      For production performance, compile Tailwind locally via Tailwind CLI:
+      npx @tailwindcss/cli -i ./input.css -o ./output.css --watch
+    -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JetLag & Global Rota Ultimate Pro</title>
+    <title>Jet Lag Calculator – Free Sleep, Light & Melatonin Plan for Any Flight</title>
+    <meta name="description" content="Calculate your personalized jet lag recovery plan instantly. Get custom sleep schedules, melatonin timing, and light exposure guides for any global flight route.">
+    <link rel="canonical" href="https://SITEADIM.com/">
+
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Jet Lag Calculator – Free Sleep, Light & Melatonin Plan for Any Flight">
+    <meta property="og:description" content="Beat jet lag with a customized sleep, melatonin, and light exposure schedule based on your flight route and chronotype.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://SITEADIM.com/">
+    <meta property="og:image" content="https://SITEADIM.com/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Jet Lag Calculator – Free Sleep, Light & Melatonin Plan for Any Flight">
+    <meta name="twitter:description" content="Calculate your personalized jet lag recovery plan instantly.">
+    <meta name="twitter:image" content="https://SITEADIM.com/og-image.jpg">
+
+    <!-- Structured Data: WebApplication & FAQPage JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "JetLag & Global Rota",
+          "url": "https://SITEADIM.com/",
+          "applicationCategory": "TravelApplication",
+          "operatingSystem": "All",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "description": "Interactive jet lag calculator providing customized sleep, light, and melatonin schedules for global travelers."
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is jet lag?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Jet lag is a temporary sleep disorder that occurs when you quickly travel across multiple time zones, disrupting your body's internal biological clock (circadian rhythm)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is eastbound flight harder to adjust to?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Eastbound flights shorten your day, requiring you to go to sleep and wake up earlier than your body naturally wants to, which is harder for the human circadian system than lengthening the day."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "When should melatonin be taken?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Melatonin is typically taken in small doses (1-3mg) a few hours before target bedtime at your destination to help shift your circadian rhythm. Note: This is general information and not medical advice; consult a doctor."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does light exposure work for recovery?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Natural sunlight is the most powerful cue for your circadian clock. Morning light advances your clock (helps with eastbound travel), while evening light delays it (helps with westbound travel)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How many days does it take to recover from jet lag?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Generally, it takes about one day of recovery for every time zone crossed, depending on the direction of travel, your age, and individual chronotype."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What should I do during the flight?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Set your watch to destination time immediately after takeoff, stay well hydrated by drinking plenty of water, limit caffeine and alcohol, and try to sleep during the destination's nighttime hours."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Vercel Web Analytics -->
@@ -34,11 +128,22 @@
         #langListContainer::-webkit-scrollbar-thumb { background: #334155; border-radius: 8px; }
     </style>
 </head>
-<body id="pageBody" class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans transition-colors duration-500 relative overflow-x-hidden">
+<body id="pageBody" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 font-sans transition-colors duration-500 relative overflow-x-hidden">
+
+    <!-- Veritabanı Yükleniyor Göstergesi -->
+    <div id="loadingIndicator" class="fixed top-0 left-0 right-0 bg-indigo-600 text-white text-center text-xs py-1.5 z-50 transition-opacity duration-300">
+        Loading 9,000+ global airports and currency rates...
+    </div>
+
+    <!-- Çerez Bilgilendirme Banner'ı -->
+    <div id="cookieBanner" class="hidden fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-md bg-slate-900 border border-slate-700 p-4 rounded-2xl shadow-2xl z-50 flex items-center justify-between gap-3">
+        <p class="text-xs text-slate-300">We use local storage and cookies to save your travel preferences and route history.</p>
+        <button onclick="acceptCookies()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition">Accept</button>
+    </div>
 
     <!-- SOL ÜST KÖŞE: Modern Aramalı 100+ Dil Seçici (Mobil Takılmasız - notranslate Zırhlı) -->
     <div id="langWidgetWrapper" class="fixed top-6 left-6 z-50 notranslate" translate="no">
-        <button onclick="toggleLangModal()" class="bg-slate-900/90 backdrop-blur-md px-3.5 py-2.5 rounded-2xl border border-slate-700 hover:border-indigo-500/60 shadow-2xl flex items-center gap-2 text-slate-200 hover:text-white transition active:scale-95">
+        <button onclick="toggleLangModal()" aria-label="Select Language" class="bg-slate-900/90 backdrop-blur-md px-3.5 py-2.5 rounded-2xl border border-slate-700 hover:border-indigo-500/60 shadow-2xl flex items-center gap-2 text-slate-200 hover:text-white transition active:scale-95">
             <span class="text-sm">🌐</span>
             <span id="currentLangLabel" class="text-xs font-semibold tracking-wide max-w-[110px] truncate">Language</span>
             <span class="text-[10px] text-slate-400">▼</span>
@@ -59,7 +164,7 @@
     </div>
 
     <!-- SAĞ ÜST KÖŞE: Hamburger Menü Butonu -->
-    <button onclick="toggleDrawer()" class="fixed top-6 right-6 z-50 bg-slate-900/90 backdrop-blur-md p-3.5 rounded-2xl border border-slate-700 shadow-2xl text-slate-200 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
+    <button onclick="toggleDrawer()" aria-label="Open Pro Tools" class="fixed top-6 right-6 z-50 bg-slate-900/90 backdrop-blur-md p-3.5 rounded-2xl border border-slate-700 shadow-2xl text-slate-200 hover:text-white hover:bg-slate-800 transition flex items-center gap-2">
         <span class="text-lg">☰</span>
         <span class="text-xs font-semibold uppercase tracking-wider hidden sm:inline">Pro Tools</span>
     </button>
@@ -68,7 +173,7 @@
     <div id="proDrawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-slate-900/95 backdrop-blur-2xl border-l border-slate-800 p-6 z-50 transform translate-x-full transition-transform duration-300 overflow-y-auto shadow-2xl space-y-6">
         <div class="flex items-center justify-between border-b border-slate-800 pb-4">
             <h3 class="font-bold text-white text-base flex items-center gap-2"><span>🛠️</span> Pro Travel Tools</h3>
-            <button onclick="toggleDrawer()" class="text-slate-400 hover:text-white text-xl font-bold px-2 py-1 rounded-xl bg-slate-800/50">✕</button>
+            <button onclick="toggleDrawer()" aria-label="Close Drawer" class="text-slate-400 hover:text-white text-xl font-bold px-2 py-1 rounded-xl bg-slate-800/50">✕</button>
         </div>
 
         <!-- 1. PWA & Offline Durum Paneli -->
@@ -90,14 +195,14 @@
         <div class="bg-emerald-950/30 border border-emerald-500/30 p-4 rounded-2xl space-y-3">
             <h4 class="font-bold text-emerald-300 text-xs uppercase tracking-wider flex items-center gap-2"><span>💱</span> Global Currency Converter (160+ Currencies)</h4>
             <div class="flex items-center gap-2">
-                <input type="number" id="convAmount" value="100" oninput="convertCurrency()" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
-                <select id="convFrom" onchange="convertCurrency()" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 notranslate" translate="no">
+                <input type="number" id="convAmount" value="100" oninput="convertCurrency()" aria-label="Conversion Amount" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
+                <select id="convFrom" onchange="convertCurrency()" aria-label="Source Currency" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 notranslate" translate="no">
                     <option value="USD">USD</option>
                 </select>
             </div>
             <div class="flex items-center justify-between text-xs text-emerald-200/90 pt-1">
                 <span>Target Currency:</span>
-                <select id="convTo" onchange="convertCurrency()" class="bg-slate-900 border border-slate-700 rounded-xl px-2 py-1 text-xs text-white focus:outline-none notranslate" translate="no">
+                <select id="convTo" onchange="convertCurrency()" aria-label="Target Currency" class="bg-slate-900 border border-slate-700 rounded-xl px-2 py-1 text-xs text-white focus:outline-none notranslate" translate="no">
                     <option value="EUR">EUR</option>
                 </select>
             </div>
@@ -110,16 +215,16 @@
         <div class="bg-indigo-950/30 border border-indigo-500/30 p-4 rounded-2xl space-y-3">
             <h4 class="font-bold text-indigo-300 text-xs uppercase tracking-wider flex items-center gap-2"><span>✈️</span> Flight & Seat (PNR) Card</h4>
             <div class="grid grid-cols-2 gap-2">
-                <input type="text" id="flightNumber" oninput="saveFlightInfo()" placeholder="Flight No (e.g., TK1986)" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
-                <input type="text" id="pnrCode" oninput="saveFlightInfo()" placeholder="PNR (e.g., X7K9LP)" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <input type="text" id="flightNumber" oninput="saveFlightInfo()" placeholder="Flight No (e.g., TK1986)" aria-label="Flight Number" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <input type="text" id="pnrCode" oninput="saveFlightInfo()" placeholder="PNR (e.g., X7K9LP)" aria-label="PNR Code" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
             </div>
-            <input type="text" id="seatNumber" oninput="saveFlightInfo()" placeholder="Seat No (e.g., 12A - Window)" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+            <input type="text" id="seatNumber" oninput="saveFlightInfo()" placeholder="Seat No (e.g., 12A - Window)" aria-label="Seat Number" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
         </div>
 
         <!-- 5. Günlük Seyahat Günlüğü (Travel Journal) -->
         <div class="bg-purple-950/30 border border-purple-500/30 p-4 rounded-2xl space-y-2">
             <h4 class="font-bold text-purple-300 text-xs uppercase tracking-wider flex items-center gap-2"><span>📔</span> Travel Journal / Notes</h4>
-            <textarea id="travelJournal" oninput="safeSetItem('jetlag_journal', this.value)" rows="3" placeholder="Discovered an amazing restaurant today..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-purple-500 transition"></textarea>
+            <textarea id="travelJournal" oninput="safeSetItem('jetlag_journal', this.value)" rows="3" placeholder="Discovered an amazing restaurant today..." aria-label="Travel Journal Notes" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-purple-500 transition"></textarea>
         </div>
 
         <!-- 6. Acil Durum & Konsolosluk Bilgi Paneli -->
@@ -136,302 +241,379 @@
     <div id="drawerOverlay" onclick="toggleDrawer()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden transition-opacity"></div>
 
     <!-- ANA KUTU -->
-    <div class="bg-slate-900/90 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl w-full max-w-2xl border border-slate-800 my-8 z-10">
-        
-        <!-- B2B Partner Banner (?partner=SirketAdi parametresiyle otomatik açılır) -->
-        <div id="b2bPartnerBanner" class="hidden mb-6 bg-gradient-to-r from-indigo-600/30 to-cyan-600/30 border border-indigo-400/40 rounded-2xl p-3 text-center text-xs text-indigo-100 font-medium shadow-lg">
-            ✨ Official Smart Flight & Circadian Assistant provided by <strong id="b2bPartnerName" class="text-white underline"></strong>
-        </div>
+    <main class="w-full max-w-2xl my-8 z-10 space-y-8">
+        <div class="bg-slate-900/90 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl border border-slate-800">
 
-        <!-- Başlık -->
-        <div class="text-center mb-6">
-            <span class="text-4xl mb-2 inline-block">✈️</span>
-            <h1 class="text-3xl font-black tracking-tight text-white bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">JetLag & Global Rota</h1>
-            <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-semibold">Ultimate Elite Travel & Circadian Rhythm Assistant</p>
-        </div>
-
-        <!-- Canlı Dünya Saatleri & Tarih Barı (Çeviriye Karşı Korumalı: notranslate) -->
-        <div class="mb-6 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/80 flex items-center justify-around text-center notranslate" translate="no">
-            <div>
-                <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold" id="fromClockLabel">Departure</span>
-                <span id="fromLiveClock" class="text-sm font-bold text-cyan-300 block">--:--:--</span>
-                <span id="fromLiveDate" class="text-[10px] text-slate-400 block mt-0.5">--.--.----</span>
-            </div>
-            <div class="h-8 w-px bg-slate-700"></div>
-            <div>
-                <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold" id="toClockLabel">Arrival</span>
-                <span id="toLiveClock" class="text-sm font-bold text-indigo-300 block">--:--:--</span>
-                <span id="toLiveDate" class="text-[10px] text-slate-400 block mt-0.5">--.--.----</span>
-            </div>
-        </div>
-
-        <!-- Canlı Geri Sayım Widget'ı (Çeviriye Karşı Korumalı: notranslate) -->
-        <div class="mb-6 bg-indigo-950/40 p-4 rounded-2xl border border-indigo-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 notranslate" translate="no">
-            <div class="text-xs text-indigo-200 font-medium">⏳ Time Until Trip:</div>
-            <div class="flex items-center gap-2">
-                <input type="date" id="flightDate" onchange="saveSettings()" class="bg-slate-900 border border-indigo-500/40 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none">
-                <div id="countdownTimer" class="text-xs font-bold text-cyan-300 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800">Select Date</div>
-            </div>
-        </div>
-        
-        <div class="space-y-6">
-            <!-- Akıllı Arama Havalimanı Seçimi (Tek Yön / Normal Mod) -->
-            <div id="singleRouteSection" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 relative">
-                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Departure Airport:</label>
-                    <input type="text" id="fromSearch" placeholder="Search 9000+ airports (e.g., IST, JFK)..." oninput="filterAirports('from')" onfocus="showDropdown('from')" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500 transition font-medium notranslate" translate="no" autocomplete="off">
-                    <input type="hidden" id="fromAirport" value="IST|Istanbul Airport (IST)|3|41.27|28.75">
-                    <div id="fromDropdown" class="absolute left-4 right-4 top-20 bg-slate-900 border border-slate-700 rounded-xl max-h-48 overflow-y-auto z-50 hidden shadow-2xl divide-y divide-slate-800 notranslate" translate="no"></div>
-                </div>
-
-                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 relative">
-                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Arrival Airport:</label>
-                    <input type="text" id="toSearch" placeholder="Search 9000+ airports (e.g., NRT, LHR)..." oninput="filterAirports('to')" onfocus="showDropdown('to')" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500 transition font-medium notranslate" translate="no" autocomplete="off">
-                    <input type="hidden" id="toAirport" value="NRT|Tokyo Narita (NRT)|9|35.76|140.38">
-                    <div id="toDropdown" class="absolute left-4 right-4 top-20 bg-slate-900 border border-slate-700 rounded-xl max-h-48 overflow-y-auto z-50 hidden shadow-2xl divide-y divide-slate-800 notranslate" translate="no"></div>
-                </div>
+            <!-- B2B Partner Banner (?partner=SirketAdi parametresiyle otomatik açılır) -->
+            <div id="b2bPartnerBanner" class="hidden mb-6 bg-gradient-to-r from-indigo-600/30 to-cyan-600/30 border border-indigo-400/40 rounded-2xl p-3 text-center text-xs text-indigo-100 font-medium shadow-lg">
+                ✨ Official Smart Flight & Circadian Assistant provided by <strong id="b2bPartnerName" class="text-white underline"></strong>
             </div>
 
-            <!-- MULTI-CITY (ÇOK DURAKLI) ROTA VE SAAT SEÇENEĞİ -->
-            <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 space-y-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <span class="block text-xs font-bold uppercase tracking-wider text-indigo-400">🌐 Multi-City World Tour</span>
-                        <span class="text-[11px] text-slate-400">Set airport and departure time for each leg separately.</span>
-                    </div>
-                    <input type="checkbox" id="multiCityToggle" onchange="toggleMultiCity()" class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0 w-5 h-5 cursor-pointer">
-                </div>
-                
-                <div id="multiCityContainer" class="hidden space-y-3 pt-2 border-t border-slate-700/50">
-                    <div id="legsList" class="space-y-3 notranslate" translate="no"></div>
-                    <button onclick="addLeg()" class="w-full bg-slate-800 hover:bg-slate-700 text-indigo-300 font-semibold py-2.5 rounded-xl text-xs uppercase tracking-wider transition border border-slate-700">
-                        + Add New Leg & Flight Time
-                    </button>
-                </div>
-            </div>
+            <!-- Başlık -->
+            <header class="text-center mb-6">
+                <span class="text-4xl mb-2 inline-block">✈️</span>
+                <h1 class="text-3xl font-black tracking-tight text-white bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">JetLag & Global Rota</h1>
+                <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-semibold">Ultimate Elite Travel & Circadian Rhythm Assistant</p>
+            </header>
 
-            <!-- Ayarlar -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60">
-                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Flight Time:</label>
-                    <input type="time" id="flightDepTime" value="10:00" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition font-medium">
-                </div>
-
-                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60">
-                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Stay (Days):</label>
-                    <input type="number" id="tripDays" value="5" min="1" max="15" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition font-medium">
-                </div>
-
-                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60">
-                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Chronotype:</label>
-                    <select id="chronotype" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition font-medium">
-                        <option value="morning">🌅 Morning</option>
-                        <option value="neutral" selected>⚖️ Balanced</option>
-                        <option value="night">🌙 Night</option>
-                    </select>
-                </div>
-
-                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60">
-                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Flight Class:</label>
-                    <select id="flightClass" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition font-medium">
-                        <option value="economy" selected>💺 Economy</option>
-                        <option value="business">🛋️ Business</option>
-                        <option value="first">👑 First</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Dönüş Rotası Ekleme Seçeneği -->
-            <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 flex items-center justify-between">
+            <!-- Canlı Dünya Saatleri & Tarih Barı (Çeviriye Karşı Korumalı: notranslate) -->
+            <div class="mb-6 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/80 flex items-center justify-around text-center notranslate" translate="no">
                 <div>
-                    <span class="block text-xs font-bold uppercase tracking-wider text-indigo-400">🔄 Return Route Simulation</span>
-                    <span class="text-[11px] text-slate-400">Include return trip adjustment schedule in the report.</span>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold" id="fromClockLabel">Departure</span>
+                    <span id="fromLiveClock" class="text-sm font-bold text-cyan-300 block">--:--:--</span>
+                    <span id="fromLiveDate" class="text-[10px] text-slate-400 block mt-0.5">--.--.----</span>
                 </div>
-                <input type="checkbox" id="includeReturn" onchange="saveSettings()" class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0 w-5 h-5 cursor-pointer">
-            </div>
-
-            <button onclick="generatePlan()" class="w-full bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-bold py-4 rounded-2xl transition duration-200 shadow-xl shadow-indigo-600/20 text-base tracking-wide">
-                Start Ultimate Route Analysis 🚀
-            </button>
-        </div>
-
-        <!-- Sonuç Kutusu -->
-        <div id="result" class="mt-8 hidden bg-slate-950/80 p-6 rounded-2xl border border-slate-800 space-y-6">
-            <div id="routeBanner" class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-500/30 text-indigo-200 font-bold text-center text-lg flex items-center justify-center gap-2 flex-wrap"></div>
-
-            <!-- Jet Lag Şiddeti Skoru & Uçuş Süresi Kartı -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-blue-950/40 border border-blue-500/30 p-4 rounded-2xl flex items-center justify-between gap-2">
-                    <div>
-                        <h3 class="font-bold text-blue-300 text-xs">⚡ Jet Lag Risk Score:</h3>
-                        <p id="severityText" class="text-[11px] text-blue-200/80 mt-0.5">Calculating...</p>
-                    </div>
-                    <div id="severityScore" class="text-xl font-black text-cyan-400 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-800 notranslate" translate="no">-%</div>
-                </div>
-
-                <div class="bg-indigo-950/40 border border-indigo-500/30 p-4 rounded-2xl flex items-center justify-between gap-2">
-                    <div>
-                        <h3 class="font-bold text-indigo-300 text-xs">✈️ Estimated Flight Duration:</h3>
-                        <p id="flightDurationText" class="text-[11px] text-indigo-200/80 mt-0.5">Distance analysis completed</p>
-                    </div>
-                    <div id="flightDurationBadge" class="text-sm font-black text-indigo-300 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-800">- Hours</div>
-                </div>
-            </div>
-
-            <!-- Uçuş İçi Akıllı Uyku Reçetesi -->
-            <div class="bg-purple-950/40 border border-purple-500/40 p-4 rounded-2xl space-y-2">
-                <h3 class="font-bold text-purple-300 flex items-center gap-2 text-base">
-                    <span>✈️💤</span> In-Flight Smart Sleep Prescription:
-                </h3>
-                <div id="flightSleepPrescription" class="text-sm space-y-1 text-purple-200/90"></div>
-            </div>
-
-            <!-- Sirkadiyen Egzersiz Protokolü -->
-            <div class="bg-teal-950/40 border border-teal-500/40 p-4 rounded-2xl space-y-2">
-                <h3 class="font-bold text-teal-300 flex items-center gap-2 text-base">
-                    <span>🏃‍♂️🧘‍♀️</span> Circadian Adaptation & Exercise Protocol:
-                </h3>
-                <div id="exerciseProtocol" class="text-sm space-y-1.5 text-teal-200/90"></div>
-            </div>
-
-            <!-- Günlük Enerji & Adaptasyon Takipçisi -->
-            <div class="bg-teal-950/30 border border-teal-500/30 p-4 rounded-2xl space-y-3">
-                <h3 class="font-bold text-teal-300 flex items-center gap-2 text-base">
-                    <span>📈</span> Daily Energy & Adaptation Tracker (Check-in):
-                </h3>
-                <p class="text-xs text-teal-200/80">Rate how you feel each day during your trip (1: Very Exhausted, 10: Energetic):</p>
-                <div id="dailyCheckInContainer" class="space-y-2"></div>
-            </div>
-
-            <!-- Uçuş Öncesi Uyku Protokolü -->
-            <div class="bg-purple-950/30 border border-purple-500/30 p-4 rounded-2xl space-y-2">
-                <h3 class="font-bold text-purple-300 flex items-center gap-2 text-base">
-                    <span>🌙</span> Pre-Flight Sleep Shifting Schedule:
-                </h3>
-                <div id="preFlightShift" class="text-sm space-y-1 text-purple-200/90"></div>
-            </div>
-
-            <!-- Melatonin & Takviye Alarmı -->
-            <div class="bg-pink-950/30 border border-pink-500/30 p-4 rounded-2xl space-y-2">
-                <h3 class="font-bold text-pink-300 flex items-center gap-2 text-base">
-                    <span>💊</span> Melatonin & Circadian Supplement Plan:
-                </h3>
-                <div id="melatoninPlan" class="text-sm space-y-1.5 text-pink-200/90"></div>
-            </div>
-
-            <!-- Hidratasyon Kutusu -->
-            <div class="bg-cyan-950/30 border border-cyan-500/30 p-4 rounded-2xl space-y-2">
-                <h3 class="font-bold text-cyan-300 flex items-center gap-2 text-base">
-                    <span>💧</span> In-Flight Hydration Prescription:
-                </h3>
-                <div id="hydrationPlan" class="text-sm space-y-1 text-cyan-200/90"></div>
-            </div>
-
-            <!-- Kafein & Alkol Alarm Kutusu -->
-            <div class="bg-amber-950/30 border border-amber-500/30 p-4 rounded-2xl space-y-2">
-                <h3 class="font-bold text-amber-300 flex items-center gap-2 text-base">
-                    <span>☕⚠️</span> Caffeine & Alcohol Cutoff Alarms:
-                </h3>
-                <div id="caffeineAlerts" class="text-sm space-y-1.5 text-amber-200/90"></div>
-            </div>
-
-            <!-- Dönüş Rotası Planı -->
-            <div id="returnTripSection" class="hidden bg-indigo-950/30 border border-indigo-500/30 p-4 rounded-2xl space-y-2">
-                <h3 class="font-bold text-indigo-300 flex items-center gap-2 text-base">
-                    <span>🔄</span> Return Route (Homebound) Adjustment Schedule:
-                </h3>
-                <div id="returnTripPlan" class="text-sm space-y-1 text-indigo-200/90"></div>
-            </div>
-
-            <!-- Kişisel Seyahat / İlaç Notları Paneli -->
-            <div class="bg-violet-950/30 border border-violet-500/30 p-4 rounded-2xl space-y-2">
-                <h3 class="font-bold text-violet-300 flex items-center gap-2 text-base">
-                    <span>📝</span> Personal Travel & Medication Notes (Saved in Browser):
-                </h3>
-                <textarea id="customTravelNotes" oninput="safeSetItem('jetlag_custom_notes', this.value)" rows="3" placeholder="e.g., Take blood pressure medication at 09:00..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-violet-500 transition"></textarea>
-            </div>
-
-            <!-- Uçuş İçi DVT & Esneme Rehberi -->
-            <div class="bg-rose-950/30 border border-rose-500/30 p-4 rounded-2xl space-y-2">
-                <h3 class="font-bold text-rose-300 flex items-center gap-2 text-base">
-                    <span>🧘‍♂️</span> In-Flight DVT (Blood Circulation) & Stretching Guide:
-                </h3>
-                <div class="text-sm space-y-1.5 text-rose-200/90">
-                    <div>• <strong>Ankle Rotations:</strong> Rotate your ankles clockwise and counter-clockwise 10 times every hour.</div>
-                    <div>• <strong>Heel-Toe Raises:</strong> Lift your heels while keeping toes on the floor, then reverse.</div>
-                    <div>• <strong>Knee Pulls:</strong> Gently pull each knee toward your chest and hold for 10 seconds.</div>
-                </div>
-            </div>
-
-            <!-- Gelişmiş Akıllı Valiz Listesi -->
-            <div class="bg-emerald-950/30 border border-emerald-500/30 p-4 rounded-2xl space-y-2">
-                <h3 class="font-bold text-emerald-300 flex items-center gap-2 text-base">
-                    <span>🧳</span> City-Specific Smart Packing List:
-                </h3>
-                <div id="packingList" class="text-sm space-y-1.5 text-emerald-200/90"></div>
-            </div>
-
-            <div class="space-y-3">
-                <h3 class="font-bold text-slate-200 flex items-center gap-2 text-base border-b border-slate-800 pb-2">
-                    <span>⏱️</span> In-Flight Timeline:
-                </h3>
-                <div id="flightTimeline" class="space-y-2 text-sm text-slate-300"></div>
-            </div>
-
-            <div class="space-y-3">
-                <h3 class="font-bold text-slate-200 flex items-center gap-2 text-base border-b border-slate-800 pb-2">
-                    <span>🧬</span> Body Clock Adjustment Guide:
-                </h3>
-                <ul id="planList" class="text-sm space-y-2.5 list-disc list-inside text-slate-300"></ul>
-            </div>
-
-            <div class="space-y-3">
-                <h3 id="cityScheduleTitle" class="font-bold text-slate-200 flex items-center gap-2 text-base border-b border-slate-800 pb-2">
-                    <span>🗺️</span> City Exploration Schedule:
-                </h3>
-                <div id="tripSchedule" class="space-y-3 text-sm text-slate-300"></div>
-            </div>
-
-            <!-- VİRAL PAYLAŞIM ALANI -->
-            <div class="bg-indigo-950/50 border border-indigo-500/40 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                <div class="h-8 w-px bg-slate-700"></div>
                 <div>
-                    <h4 class="font-bold text-indigo-200 text-xs flex items-center justify-center sm:justify-start gap-1.5"><span>🌐</span> Liked This App?</h4>
-                    <p class="text-[11px] text-indigo-300/80 mt-0.5">Share it with a fellow traveler to help them beat jet lag too!</p>
-                </div>
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <button onclick="shareApp()" class="flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30">
-                        🔗 Recommend to a Friend
-                    </button>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold" id="toClockLabel">Arrival</span>
+                    <span id="toLiveClock" class="text-sm font-bold text-indigo-300 block">--:--:--</span>
+                    <span id="toLiveDate" class="text-[10px] text-slate-400 block mt-0.5">--.--.----</span>
                 </div>
             </div>
 
-            <!-- Butonlar Grubu -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
-                <button onclick="copyPlan()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-3 rounded-xl text-xs uppercase tracking-wider transition border border-slate-700">
-                    📋 Copy to Clipboard
+            <!-- Canlı Geri Sayım Widget'ı (Çeviriye Karşı Korumalı: notranslate) -->
+            <div class="mb-6 bg-indigo-950/40 p-4 rounded-2xl border border-indigo-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 notranslate" translate="no">
+                <div class="text-xs text-indigo-200 font-medium">⏳ Time Until Trip:</div>
+                <div class="flex items-center gap-2">
+                    <input type="date" id="flightDate" onchange="saveSettings()" aria-label="Flight Date" class="bg-slate-900 border border-indigo-500/40 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none">
+                    <div id="countdownTimer" class="text-xs font-bold text-cyan-300 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800">Select Date</div>
+                </div>
+            </div>
+
+            <section class="space-y-6">
+                <!-- Akıllı Arama Havalimanı Seçimi (Tek Yön / Normal Mod) -->
+                <div id="singleRouteSection" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 relative">
+                        <label for="fromSearch" class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Departure Airport:</label>
+                        <input type="text" id="fromSearch" placeholder="Search 9000+ airports (e.g., IST, JFK)..." oninput="filterAirports('from')" onfocus="showDropdown('from')" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500 transition font-medium notranslate" translate="no" autocomplete="off">
+                        <input type="hidden" id="fromAirport" value="IST|Istanbul Airport (IST)|Europe/Istanbul|41.27|28.75">
+                        <div id="fromDropdown" class="absolute left-4 right-4 top-20 bg-slate-900 border border-slate-700 rounded-xl max-h-48 overflow-y-auto z-50 hidden shadow-2xl divide-y divide-slate-800 notranslate" translate="no"></div>
+                    </div>
+
+                    <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 relative">
+                        <label for="toSearch" class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Arrival Airport:</label>
+                        <input type="text" id="toSearch" placeholder="Search 9000+ airports (e.g., NRT, LHR)..." oninput="filterAirports('to')" onfocus="showDropdown('to')" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500 transition font-medium notranslate" translate="no" autocomplete="off">
+                        <input type="hidden" id="toAirport" value="NRT|Tokyo Narita (NRT)|Asia/Tokyo|35.76|140.38">
+                        <div id="toDropdown" class="absolute left-4 right-4 top-20 bg-slate-900 border border-slate-700 rounded-xl max-h-48 overflow-y-auto z-50 hidden shadow-2xl divide-y divide-slate-800 notranslate" translate="no"></div>
+                    </div>
+                </div>
+
+                <!-- MULTI-CITY (ÇOK DURAKLI) ROTA VE SAAT SEÇENEĞİ -->
+                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="block text-xs font-bold uppercase tracking-wider text-indigo-400">🌐 Multi-City World Tour</span>
+                            <span class="text-[11px] text-slate-400">Set airport and departure time for each leg separately.</span>
+                        </div>
+                        <input type="checkbox" id="multiCityToggle" onchange="toggleMultiCity()" aria-label="Toggle Multi-City Tour" class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0 w-5 h-5 cursor-pointer">
+                    </div>
+
+                    <div id="multiCityContainer" class="hidden space-y-3 pt-2 border-t border-slate-700/50">
+                        <div id="legsList" class="space-y-3 notranslate" translate="no"></div>
+                        <button onclick="addLeg()" class="w-full bg-slate-800 hover:bg-slate-700 text-indigo-300 font-semibold py-2.5 rounded-xl text-xs uppercase tracking-wider transition border border-slate-700">
+                            + Add New Leg & Flight Time
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ayarlar -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60">
+                        <label for="flightDepTime" class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Flight Time:</label>
+                        <input type="time" id="flightDepTime" value="10:00" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition font-medium">
+                    </div>
+
+                    <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60">
+                        <label for="tripDays" class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Stay (Days):</label>
+                        <input type="number" id="tripDays" value="5" min="1" max="15" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition font-medium">
+                    </div>
+
+                    <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60">
+                        <label for="chronotype" class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Chronotype:</label>
+                        <select id="chronotype" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition font-medium">
+                            <option value="morning">🌅 Morning</option>
+                            <option value="neutral" selected>⚖️ Balanced</option>
+                            <option value="night">🌙 Night</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60">
+                        <label for="flightClass" class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Flight Class:</label>
+                        <select id="flightClass" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 transition font-medium">
+                            <option value="economy" selected>💺 Economy</option>
+                            <option value="business">🛋️ Business</option>
+                            <option value="first">👑 First</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Dönüş Rotası Ekleme Seçeneği -->
+                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 flex items-center justify-between">
+                    <div>
+                        <span class="block text-xs font-bold uppercase tracking-wider text-indigo-400">🔄 Return Route Simulation</span>
+                        <span class="text-[11px] text-slate-400">Include return trip adjustment schedule in the report.</span>
+                    </div>
+                    <input type="checkbox" id="includeReturn" onchange="saveSettings()" aria-label="Include Return Route Simulation" class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0 w-5 h-5 cursor-pointer">
+                </div>
+
+                <button onclick="generatePlan()" class="w-full bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-bold py-4 rounded-2xl transition duration-200 shadow-xl shadow-indigo-600/20 text-base tracking-wide">
+                    Start Ultimate Route Analysis 🚀
                 </button>
-                <button onclick="shareOnWhatsApp()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-semibold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-600/20">
-                    💬 Share via WhatsApp
-                </button>
-                <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-600/20">
-                    🖨️ Download PDF / Print
-                </button>
+            </section>
+
+            <!-- Sonuç Kutusu -->
+            <div id="result" class="mt-8 hidden bg-slate-950/80 p-6 rounded-2xl border border-slate-800 space-y-6">
+                <div id="routeBanner" class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-500/30 text-indigo-200 font-bold text-center text-lg flex items-center justify-center gap-2 flex-wrap"></div>
+
+                <!-- Jet Lag Şiddeti Skoru & Uçuş Süresi Kartı -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-blue-950/40 border border-blue-500/30 p-4 rounded-2xl flex items-center justify-between gap-2">
+                        <div>
+                            <h3 class="font-bold text-blue-300 text-xs">⚡ Jet Lag Risk Score:</h3>
+                            <p id="severityText" class="text-[11px] text-blue-200/80 mt-0.5">Calculating...</p>
+                        </div>
+                        <div id="severityScore" class="text-xl font-black text-cyan-400 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-800 notranslate" translate="no">-%</div>
+                    </div>
+
+                    <div class="bg-indigo-950/40 border border-indigo-500/30 p-4 rounded-2xl flex items-center justify-between gap-2">
+                        <div>
+                            <h3 class="font-bold text-indigo-300 text-xs">✈️ Estimated Flight Duration:</h3>
+                            <p id="flightDurationText" class="text-[11px] text-indigo-200/80 mt-0.5">Distance analysis completed</p>
+                        </div>
+                        <div id="flightDurationBadge" class="text-sm font-black text-indigo-300 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-800">- Hours</div>
+                    </div>
+                </div>
+
+                <!-- Uçuş İçi Akıllı Uyku Reçetesi -->
+                <div class="bg-purple-950/40 border border-purple-500/40 p-4 rounded-2xl space-y-2">
+                    <h3 class="font-bold text-purple-300 flex items-center gap-2 text-base">
+                        <span>✈️💤</span> In-Flight Smart Sleep Prescription:
+                    </h3>
+                    <div id="flightSleepPrescription" class="text-sm space-y-1 text-purple-200/90"></div>
+                </div>
+
+                <!-- Sirkadiyen Egzersiz Protokolü -->
+                <div class="bg-teal-950/40 border border-teal-500/40 p-4 rounded-2xl space-y-2">
+                    <h3 class="font-bold text-teal-300 flex items-center gap-2 text-base">
+                        <span>🏃‍♂️🧘‍♀️</span> Circadian Adaptation & Exercise Protocol:
+                    </h3>
+                    <div id="exerciseProtocol" class="text-sm space-y-1.5 text-teal-200/90"></div>
+                </div>
+
+                <!-- Günlük Enerji & Adaptasyon Takipçisi -->
+                <div class="bg-teal-950/30 border border-teal-500/30 p-4 rounded-2xl space-y-3">
+                    <h3 class="font-bold text-teal-300 flex items-center gap-2 text-base">
+                        <span>📈</span> Daily Energy & Adaptation Tracker (Check-in):
+                    </h3>
+                    <p class="text-xs text-teal-200/80">Rate how you feel each day during your trip (1: Very Exhausted, 10: Energetic):</p>
+                    <div id="dailyCheckInContainer" class="space-y-2"></div>
+                </div>
+
+                <!-- Uçuş Öncesi Uyku Protokolü -->
+                <div class="bg-purple-950/30 border border-purple-500/30 p-4 rounded-2xl space-y-2">
+                    <h3 class="font-bold text-purple-300 flex items-center gap-2 text-base">
+                        <span>🌙</span> Pre-Flight Sleep Shifting Schedule:
+                    </h3>
+                    <div id="preFlightShift" class="text-sm space-y-1 text-purple-200/90"></div>
+                </div>
+
+                <!-- Melatonin & Takviye Alarmı -->
+                <div class="bg-pink-950/30 border border-pink-500/30 p-4 rounded-2xl space-y-2">
+                    <h3 class="font-bold text-pink-300 flex items-center gap-2 text-base">
+                        <span>💊</span> Melatonin & Circadian Supplement Plan:
+                    </h3>
+                    <div id="melatoninPlan" class="text-sm space-y-1.5 text-pink-200/90"></div>
+                </div>
+
+                <!-- Hidratasyon Kutusu -->
+                <div class="bg-cyan-950/30 border border-cyan-500/30 p-4 rounded-2xl space-y-2">
+                    <h3 class="font-bold text-cyan-300 flex items-center gap-2 text-base">
+                        <span>💧</span> In-Flight Hydration Prescription:
+                    </h3>
+                    <div id="hydrationPlan" class="text-sm space-y-1 text-cyan-200/90"></div>
+                </div>
+
+                <!-- Kafein & Alkol Alarm Kutusu -->
+                <div class="bg-amber-950/30 border border-amber-500/30 p-4 rounded-2xl space-y-2">
+                    <h3 class="font-bold text-amber-300 flex items-center gap-2 text-base">
+                        <span>☕⚠️</span> Caffeine & Alcohol Cutoff Alarms:
+                    </h3>
+                    <div id="caffeineAlerts" class="text-sm space-y-1.5 text-amber-200/90"></div>
+                </div>
+
+                <!-- Dönüş Rotası Planı -->
+                <div id="returnTripSection" class="hidden bg-indigo-950/30 border border-indigo-500/30 p-4 rounded-2xl space-y-2">
+                    <h3 class="font-bold text-indigo-300 flex items-center gap-2 text-base">
+                        <span>🔄</span> Return Route (Homebound) Adjustment Schedule:
+                    </h3>
+                    <div id="returnTripPlan" class="text-sm space-y-1 text-indigo-200/90"></div>
+                </div>
+
+                <!-- Kişisel Seyahat / İlaç Notları Paneli -->
+                <div class="bg-violet-950/30 border border-violet-500/30 p-4 rounded-2xl space-y-2">
+                    <h3 class="font-bold text-violet-300 flex items-center gap-2 text-base">
+                        <span>📝</span> Personal Travel & Medication Notes (Saved in Browser):
+                    </h3>
+                    <textarea id="customTravelNotes" oninput="safeSetItem('jetlag_custom_notes', this.value)" rows="3" placeholder="e.g., Take blood pressure medication at 09:00..." aria-label="Personal Travel Notes" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-violet-500 transition"></textarea>
+                </div>
+
+                <!-- Uçuş İçi DVT & Esneme Rehberi -->
+                <div class="bg-rose-950/30 border border-rose-500/30 p-4 rounded-2xl space-y-2">
+                    <h3 class="font-bold text-rose-300 flex items-center gap-2 text-base">
+                        <span>🧘‍♂️</span> In-Flight DVT (Blood Circulation) & Stretching Guide:
+                    </h3>
+                    <div class="text-sm space-y-1.5 text-rose-200/90">
+                        <div>• <strong>Ankle Rotations:</strong> Rotate your ankles clockwise and counter-clockwise 10 times every hour.</div>
+                        <div>• <strong>Heel-Toe Raises:</strong> Lift your heels while keeping toes on the floor, then reverse.</div>
+                        <div>• <strong>Knee Pulls:</strong> Gently pull each knee toward your chest and hold for 10 seconds.</div>
+                    </div>
+                </div>
+
+                <!-- Gelişmiş Akıllı Valiz Listesi -->
+                <div class="bg-emerald-950/30 border border-emerald-500/30 p-4 rounded-2xl space-y-2">
+                    <h3 class="font-bold text-emerald-300 flex items-center gap-2 text-base">
+                        <span>🧳</span> City-Specific Smart Packing List:
+                    </h3>
+                    <div id="packingList" class="text-sm space-y-1.5 text-emerald-200/90"></div>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="font-bold text-slate-200 flex items-center gap-2 text-base border-b border-slate-800 pb-2">
+                        <span>⏱️</span> In-Flight Timeline:
+                    </h3>
+                    <div id="flightTimeline" class="space-y-2 text-sm text-slate-300"></div>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="font-bold text-slate-200 flex items-center gap-2 text-base border-b border-slate-800 pb-2">
+                        <span>🧬</span> Body Clock Adjustment Guide:
+                    </h3>
+                    <ul id="planList" class="text-sm space-y-2.5 list-disc list-inside text-slate-300"></ul>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 id="cityScheduleTitle" class="font-bold text-slate-200 flex items-center gap-2 text-base border-b border-slate-800 pb-2">
+                        <span>🗺️</span> City Exploration Schedule:
+                    </h3>
+                    <div id="tripSchedule" class="space-y-3 text-sm text-slate-300"></div>
+                </div>
+
+                <!-- GELİR: AFFILIATE BLOKLARI (Sonuç Ekranı) -->
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-amber-400">✈️ Plan Ready, Now Complete Your Journey</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="affiliateContainer">
+                        <!-- JS ile doldurulacak dinamik link kartları -->
+                    </div>
+                    <p class="text-[10px] text-slate-500 italic text-center mt-2">This page contains affiliate links; there is no extra cost to you.</p>
+                </div>
+
+                <!-- VİRAL PAYLAŞIM ALANI -->
+                <div class="bg-indigo-950/50 border border-indigo-500/40 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                    <div>
+                        <h4 class="font-bold text-indigo-200 text-xs flex items-center justify-center sm:justify-start gap-1.5"><span>🌐</span> Liked This App?</h4>
+                        <p class="text-[11px] text-indigo-300/80 mt-0.5">Share it with a fellow traveler to help them beat jet lag too!</p>
+                    </div>
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <button onclick="shareApp()" class="flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30">
+                            🔗 Recommend to a Friend
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Butonlar Grubu -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
+                    <button onclick="copyPlan()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-3 rounded-xl text-xs uppercase tracking-wider transition border border-slate-700">
+                        📋 Copy to Clipboard
+                    </button>
+                    <button onclick="shareOnWhatsApp()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-semibold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-600/20">
+                        💬 Share via WhatsApp
+                    </button>
+                    <a id="emailReportBtn" href="#" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-indigo-600/20 text-center flex items-center justify-center">
+                        📧 Email Report
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
+
+        <!-- FAQ / SSS BÖLÜMÜ (Semantik & SEO Uyumlu) -->
+        <section class="bg-slate-900/90 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl border border-slate-800 space-y-4">
+            <h2 class="text-xl font-bold text-white mb-4">Frequently Asked Questions About Jet Lag</h2>
+            <div class="space-y-4 text-xs text-slate-300">
+                <div>
+                    <h3 class="font-bold text-indigo-300 text-sm">What is jet lag?</h3>
+                    <p>Jet lag is a temporary sleep disorder that occurs when you quickly travel across multiple time zones, disrupting your body's internal biological clock (circadian rhythm).</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-indigo-300 text-sm">Why is eastbound flight harder to adjust to?</h3>
+                    <p>Eastbound flights shorten your day, requiring you to go to sleep and wake up earlier than your body naturally wants to, which is harder for the human circadian system than lengthening the day.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-indigo-300 text-sm">When should melatonin be taken?</h3>
+                    <p>Melatonin is typically taken in small doses (1-3mg) a few hours before target bedtime at your destination to help shift your circadian rhythm. Note: This is general information and not medical advice; consult a doctor.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-indigo-300 text-sm">How does light exposure work for recovery?</h3>
+                    <p>Natural sunlight is the most powerful cue for your circadian clock. Morning light advances your clock (helps with eastbound travel), while evening light delays it (helps with westbound travel).</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-indigo-300 text-sm">How many days does it take to recover from jet lag?</h3>
+                    <p>Generally, it takes about one day of recovery for every time zone crossed, depending on the direction of travel, your age, and individual chronotype.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-indigo-300 text-sm">What should I do during the flight?</h3>
+                    <p>Set your watch to destination time immediately after takeoff, stay well hydrated by drinking plenty of water, limit caffeine and alcohol, and try to sleep during the destination's nighttime hours.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- POPÜLER ROTALAR BÖLÜMÜ -->
+        <section class="bg-slate-900/90 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl border border-slate-800 space-y-4">
+            <h2 class="text-xl font-bold text-white mb-2">Popular Global Flight Routes</h2>
+            <p class="text-xs text-slate-400 mb-4">Click any route below to instantly calculate its jet lag plan:</p>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
+                <a href="?from=IST&to=JFK" class="bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700 p-2.5 rounded-xl text-indigo-300 font-medium transition text-center">IST ➔ JFK</a>
+                <a href="?from=IST&to=NRT" class="bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700 p-2.5 rounded-xl text-indigo-300 font-medium transition text-center">IST ➔ NRT</a>
+                <a href="?from=IST&to=LHR" class="bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700 p-2.5 rounded-xl text-indigo-300 font-medium transition text-center">IST ➔ LHR</a>
+                <a href="?from=IST&to=DXB" class="bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700 p-2.5 rounded-xl text-indigo-300 font-medium transition text-center">IST ➔ DXB</a>
+                <a href="?from=IST&to=SIN" class="bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700 p-2.5 rounded-xl text-indigo-300 font-medium transition text-center">IST ➔ SIN</a>
+                <a href="?from=LHR&to=JFK" class="bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700 p-2.5 rounded-xl text-indigo-300 font-medium transition text-center">LHR ➔ JFK</a>
+                <a href="?from=LHR&to=SIN" class="bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700 p-2.5 rounded-xl text-indigo-300 font-medium transition text-center">LHR ➔ SIN</a>
+                <a href="?from=JFK&to=LAX" class="bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700 p-2.5 rounded-xl text-indigo-300 font-medium transition text-center">JFK ➔ LAX</a>
+                <a href="?from=JFK&to=LHR" class="bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700 p-2.5 rounded-xl text-indigo-300 font-medium transition text-center">JFK ➔ LHR</a>
+                <a href="?from=DXB&to=SYD" class="bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700 p-2.5 rounded-xl text-indigo-300 font-medium transition text-center">DXB ➔ SYD</a>
+                <a href="?from=IST&to=LAX" class="bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700 p-2.5 rounded-xl text-indigo-300 font-medium transition text-center">IST ➔ LAX</a>
+                <a href="?from=FRA&to=BKK" class="bg-slate-800/80 hover:bg-indigo-600/30 border border-slate-700 p-2.5 rounded-xl text-indigo-300 font-medium transition text-center">FRA ➔ BKK</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="w-full max-w-2xl text-center py-6 border-t border-slate-800 text-[11px] text-slate-500 space-y-3 z-10">
+        <div class="flex items-center justify-center gap-4 flex-wrap">
+            <a href="#" class="hover:text-slate-300 transition">Privacy Policy</a>
+            <span>•</span>
+            <a href="#" class="hover:text-slate-300 transition">Terms of Use</a>
+            <span>•</span>
+            <a href="#" class="hover:text-slate-300 transition">Contact</a>
+            <span>•</span>
+            <a href="https://buymeacoffee.com/YOUR_ID_HERE" target="_blank" rel="noopener" class="text-amber-400 font-semibold hover:underline">☕ Support This Site</a>
+        </div>
+        <p><strong>Medical Disclaimer:</strong> This web application is for informational and educational purposes only. It does not constitute medical advice. Always consult a professional physician regarding health conditions or medication use.</p>
+        <p>© 2026 JetLag & Global Rota. All rights reserved.</p>
+    </footer>
 
     <!-- SAĞ ALT KÖŞE: Tema Değiştirici -->
     <div class="fixed bottom-4 right-4 bg-slate-900/90 backdrop-blur-md p-3 rounded-2xl border border-slate-700 shadow-2xl flex items-center gap-2 z-50 notranslate" translate="no">
         <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Theme:</span>
-        <button onclick="setTheme('slate')" class="w-6 h-6 rounded-full bg-black border-2 border-slate-600 hover:scale-110 transition" title="Pitch Black"></button>
-        <button onclick="setTheme('indigo')" class="w-6 h-6 rounded-full bg-indigo-950 border-2 border-indigo-500 hover:scale-110 transition" title="Midnight Blue"></button>
-        <button onclick="setTheme('emerald')" class="w-6 h-6 rounded-full bg-emerald-900 border-2 border-emerald-500 hover:scale-110 transition" title="Dark Forest"></button>
-        <button onclick="setTheme('purple')" class="w-6 h-6 rounded-full bg-purple-900 border-2 border-purple-500 hover:scale-110 transition" title="Cosmic Purple"></button>
+        <button onclick="setTheme('slate')" aria-label="Pitch Black Theme" class="w-6 h-6 rounded-full bg-black border-2 border-slate-600 hover:scale-110 transition" title="Pitch Black"></button>
+        <button onclick="setTheme('indigo')" aria-label="Midnight Blue Theme" class="w-6 h-6 rounded-full bg-indigo-950 border-2 border-indigo-500 hover:scale-110 transition" title="Midnight Blue"></button>
+        <button onclick="setTheme('emerald')" aria-label="Dark Forest Theme" class="w-6 h-6 rounded-full bg-emerald-900 border-2 border-emerald-500 hover:scale-110 transition" title="Dark Forest"></button>
+        <button onclick="setTheme('purple')" aria-label="Cosmic Purple Theme" class="w-6 h-6 rounded-full bg-purple-900 border-2 border-purple-500 hover:scale-110 transition" title="Cosmic Purple"></button>
     </div>
 
     <!-- MODERN 100+ DİL ARAMA VE GOOGLE ÇEVİRİ MOTORU -->
     <script type="text/javascript">
-        const LANG_CODES = "en,tr,de,fr,es,it,ru,ar,zh-CN,zh-TW,ja,ko,pt,nl,pl,sv,da,fi,no,el,cs,ro,hu,uk,bg,hr,sr,sk,sl,et,lv,lt,he,hi,bn,pa,ta,te,mr,gu,kn,ml,th,vi,id,ms,tl,fa,ur,az,uz,kk,ky,tg,tk,ka,hy,sq,bs,mk,is,ga,cy,mt,eu,ca,gl,af,sw,zu,xh,am,ha,ig,yo,so,mg,ne,si,km,lo,my,mn,ps,ku,sd,yi,eo,la,jw,su,ceb,hmn,haw,mi,sm,gd,lb,fy,co,be,ny,ht,ig,rw,MG,mt,or,st,sn,so,su,sw,tg,ti,tk,tt,ug,uz,xh,yi,yo,zu".split(",");
+        const LANG_CODES = "en,tr,de,fr,es,it,ru,ar,zh-CN,zh-TW,ja,ko,pt,nl,pl,sv,da,fi,no,el,cs,ro,hu,uk,bg,hr,sr,sk,sl,et,lv,lt,he,hi,bn,pa,ta,te,mr,gu,kn,ml,th,vi,id,ms,tl,fa,ur,az,uz,kk,ky,tg,tk,ka,hy,sq,bs,mk,is,ga,cy,mt,eu,ca,gl,af,sw,zu,xh,am,ha,ig,yo,so,mg,ne,si,km,lo,my,mn,ps,ku,sd,yi,eo,la,jw,su,ceb,hmn,haw,mi,sm,gd,lb,fy,co,be,ny,ht,rw,mt,or,st,sn,so,su,sw,tg,ti,tk,tt,ug,uz,xh,yi,yo,zu".split(",");
         const uniqueCodes = [...new Set(LANG_CODES.map(c => c.trim()))];
         const trDisplay = (typeof Intl !== "undefined" && Intl.DisplayNames) ? new Intl.DisplayNames(['tr'], { type: 'language' }) : null;
         const enDisplay = (typeof Intl !== "undefined" && Intl.DisplayNames) ? new Intl.DisplayNames(['en'], { type: 'language' }) : null;
@@ -523,10 +705,25 @@
         let exchangeRates = {};
         let deferredPrompt = null;
 
+        // AFFILIATE CONFIGURATION PLACEHOLDERS
+        const AFFILIATE_LINKS = {
+            aviasales: "https://www.aviasales.com/?marker=YOUR_ID_HERE",
+            skyscanner: "https://www.skyscanner.com/transport/flights/?associateid=YOUR_ID_HERE",
+            booking: "https://www.booking.com/searchresults.html?aid=YOUR_ID_HERE&ss=",
+            safetywing: "https://safetywing.com/nomad-insurance/?referenceID=YOUR_ID_HERE",
+            airalo: "https://www.airalo.com/?partnerId=YOUR_ID_HERE",
+            amazonTag: "YOUR_TAG"
+        };
+
         let multiCityLegs = [
-            { code: "IST", name: "Istanbul Airport (IST)", offset: 3, lat: 41.27, lon: 28.75, depTime: "10:00" },
-            { code: "LHR", name: "London Heathrow (LHR)", offset: 0, lat: 51.47, lon: -0.45, depTime: "15:00" }
+            { code: "IST", name: "Istanbul Airport (IST)", tz: "Europe/Istanbul", lat: 41.27, lon: 28.75, depTime: "10:00" },
+            { code: "LHR", name: "London Heathrow (LHR)", tz: "Europe/London", lat: 51.47, lon: -0.45, depTime: "15:00" }
         ];
+
+        function acceptCookies() {
+            safeSetItem('jetlag_cookies_accepted', 'true');
+            document.getElementById('cookieBanner').classList.add('hidden');
+        }
 
         // B2B Partner Modülü (?partner=SirketAdi)
         (function checkB2BPartner() {
@@ -606,12 +803,12 @@
                 airports = airportArray.map(a => {
                     let lon = parseFloat(a.lon) || 0;
                     let lat = parseFloat(a.lat) || 0;
-                    let calculatedOffset = Math.round(lon / 15);
+                    let tzName = a.tz || 'UTC';
                     let code = (a.iata || a.code || '').toUpperCase();
                     return {
                         code: code,
                         name: `${a.name || 'Airport'} (${code}) - ${a.city || a.state || ''}`,
-                        offset: calculatedOffset,
+                        tz: tzName,
                         lat: lat,
                         lon: lon
                     };
@@ -627,11 +824,15 @@
                 }
                 if (airports.length === 0) {
                     airports = [
-                        { code: "IST", name: "Istanbul Airport (IST) - Istanbul", offset: 3, lat: 41.27, lon: 28.75 },
-                        { code: "NRT", name: "Tokyo Narita (NRT) - Tokyo", offset: 9, lat: 35.76, lon: 140.38 },
-                        { code: "JFK", name: "New York JFK (JFK) - New York", offset: -5, lat: 40.64, lon: -73.77 }
+                        { code: "IST", name: "Istanbul Airport (IST) - Istanbul", tz: "Europe/Istanbul", lat: 41.27, lon: 28.75 },
+                        { code: "NRT", name: "Tokyo Narita (NRT) - Tokyo", tz: "Asia/Tokyo", lat: 35.76, lon: 140.38 },
+                        { code: "JFK", name: "New York JFK (JFK) - New York", tz: "America/New_York", lat: 40.64, lon: -73.77 }
                     ];
                 }
+            } finally {
+                const indicator = document.getElementById('loadingIndicator');
+                if(indicator) indicator.style.opacity = '0';
+                setTimeout(() => indicator?.remove(), 300);
             }
         }
 
@@ -662,14 +863,14 @@
             let toSelect = document.getElementById('convTo');
             let currencies = Object.keys(exchangeRates).sort();
             let fromHtml = '', toHtml = '';
-            
+
             currencies.forEach(curr => {
                 let isSelectedFrom = (curr === 'USD') ? 'selected' : '';
                 let isSelectedTo = (curr === 'EUR') ? 'selected' : '';
                 fromHtml += `<option value="${curr}" ${isSelectedFrom}>${curr}</option>`;
                 toHtml += `<option value="${curr}" ${isSelectedTo}>${curr}</option>`;
             });
-            
+
             fromSelect.innerHTML = fromHtml;
             toSelect.innerHTML = toHtml;
         }
@@ -694,7 +895,7 @@
             const isChecked = document.getElementById('multiCityToggle').checked;
             const container = document.getElementById('multiCityContainer');
             const singleSection = document.getElementById('singleRouteSection');
-            
+
             if (isChecked) {
                 container.classList.remove('hidden');
                 singleSection.classList.add('hidden');
@@ -717,10 +918,10 @@
                         ${multiCityLegs.length > 2 ? `<button onclick="removeLeg(${index})" class="text-rose-400 hover:text-rose-300 font-bold px-1.5 py-0.5 bg-rose-950/40 rounded-lg">Remove</button>` : ''}
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        <input type="text" value="${leg.name}" oninput="updateLegName(${index}, this.value)" placeholder="Search Airport (e.g., JFK)" class="sm:col-span-2 bg-slate-950 border border-slate-700 rounded-lg p-2 text-white focus:outline-none">
+                        <input type="text" value="${leg.name}" oninput="updateLegName(${index}, this.value)" placeholder="Search Airport (e.g., JFK)" aria-label="Leg Airport" class="sm:col-span-2 bg-slate-950 border border-slate-700 rounded-lg p-2 text-white focus:outline-none">
                         <div>
                             <label class="block text-[10px] text-slate-400 mb-1">Dep. Time:</label>
-                            <input type="time" value="${leg.depTime || '10:00'}" oninput="updateLegTime(${index}, this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-1.5 text-white focus:outline-none">
+                            <input type="time" value="${leg.depTime || '10:00'}" oninput="updateLegTime(${index}, this.value)" aria-label="Leg Departure Time" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-1.5 text-white focus:outline-none">
                         </div>
                     </div>
                 `;
@@ -729,7 +930,7 @@
         }
 
         function addLeg() {
-            multiCityLegs.push({ code: "JFK", name: "New York JFK (JFK)", offset: -5, lat: 40.64, lon: -73.77, depTime: "12:00" });
+            multiCityLegs.push({ code: "JFK", name: "New York JFK (JFK)", tz: "America/New_York", lat: 40.64, lon: -73.77, depTime: "12:00" });
             renderLegs();
         }
 
@@ -743,7 +944,7 @@
             if (found) {
                 multiCityLegs[index].code = found.code;
                 multiCityLegs[index].name = found.name;
-                multiCityLegs[index].offset = found.offset;
+                multiCityLegs[index].tz = found.tz;
                 multiCityLegs[index].lat = found.lat;
                 multiCityLegs[index].lon = found.lon;
             }
@@ -781,13 +982,55 @@
             "IST-BCN": 3.5, "IST-DXB": 4.5, "IST-JFK": 11, "IST-LAX": 13, "IST-NRT": 11.5, "IST-SIN": 10
         };
 
-        function getFlightDuration(fromCode, toCode, timeDiff) {
+        // Haversine Distance Formula
+        function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth radius in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        function getFlightDurationAndDistance(fromCode, toCode, lat1, lon1, lat2, lon2, timeDiff) {
             let key = `${fromCode}-${toCode}`;
-            if (flightDurationMatrix[key]) return flightDurationMatrix[key];
             let reverseKey = `${toCode}-${fromCode}`;
-            if (flightDurationMatrix[reverseKey]) return flightDurationMatrix[reverseKey];
-            if (fromCode === toCode) return 0;
-            return Math.max(2, Math.abs(timeDiff) * 1.5 + 2);
+            let hours = 0;
+            let distKm = 0;
+
+            if (flightDurationMatrix[key]) {
+                hours = flightDurationMatrix[key];
+            } else if (flightDurationMatrix[reverseKey]) {
+                hours = flightDurationMatrix[reverseKey];
+            } else if (fromCode === toCode) {
+                hours = 0;
+            } else {
+                distKm = calculateHaversineDistance(lat1, lon1, lat2, lon2);
+                hours = (distKm / 850) + 0.5; // speed ~850 km/h + takeoff/landing pad
+            }
+
+            if (distKm === 0 && (lat1 !== 0 || lon1 !== 0) && (lat2 !== 0 || lon2 !== 0)) {
+                distKm = calculateHaversineDistance(lat1, lon1, lat2, lon2);
+            }
+
+            return { hours: Math.round(hours * 10) / 10, distance: Math.round(distKm) };
+        }
+
+        // IANA Timezone Offset Helper
+        function getTzOffsetHours(tzName, date = new Date()) {
+            try {
+                const tzString = date.toLocaleString('en-US', { timeZone: tzName, timeZoneName: 'shortOffset' });
+                const match = tzString.match(/GMT([+-]\d+)(?::(\d+))?/);
+                if (match) {
+                    const sign = match[1].startsWith('-') ? -1 : 1;
+                    const hours = parseInt(match[1], 10);
+                    const mins = match[2] ? parseInt(match[2], 10) / 60 : 0;
+                    return hours + (sign * mins);
+                }
+            } catch (e) {}
+            return 0;
         }
 
         function showDropdown(type) { filterAirports(type); }
@@ -823,7 +1066,7 @@
 
         function selectAirport(type, airport) {
             document.getElementById(`${type}Search`).value = airport.name;
-            document.getElementById(`${type}Airport`).value = `${airport.code}|${airport.name}|${airport.offset}|${airport.lat}|${airport.lon}`;
+            document.getElementById(`${type}Airport`).value = `${airport.code}|${airport.name}|${airport.tz}|${airport.lat}|${airport.lon}`;
             document.getElementById(`${type}Dropdown`).classList.add('hidden');
             saveSettings();
             if(type === 'to') fetchWeather(airport.lat, airport.lon);
@@ -859,24 +1102,27 @@
         function updateLiveClocks() {
             const fromVal = document.getElementById('fromAirport').value.split('|');
             const toVal = document.getElementById('toAirport').value.split('|');
-            
-            const fromOffset = parseInt(fromVal[2]) || 0;
-            const toOffset = parseInt(toVal[2]) || 0;
+
+            const fromTz = fromVal[2] || 'UTC';
+            const toTz = toVal[2] || 'UTC';
 
             document.getElementById('fromClockLabel').textContent = `${fromVal[1] ? fromVal[1].split(' ')[0] : 'Departure'} Time`;
             document.getElementById('toClockLabel').textContent = `${toVal[1] ? toVal[1].split(' ')[0] : 'Arrival'} Time`;
 
-            const now = new Date();
-            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            try {
+                const now = new Date();
+                const fromTimeString = now.toLocaleTimeString('en-US', { timeZone: fromTz, hour12: false });
+                const fromDateString = now.toLocaleDateString('en-US', { timeZone: fromTz, day: 'numeric', month: 'short', weekday: 'short' });
+                const toTimeString = now.toLocaleTimeString('en-US', { timeZone: toTz, hour12: false });
+                const toDateString = now.toLocaleDateString('en-US', { timeZone: toTz, day: 'numeric', month: 'short', weekday: 'short' });
 
-            const fromDate = new Date(utc + (3600000 * fromOffset));
-            const toDate = new Date(utc + (3600000 * toOffset));
-
-            document.getElementById('fromLiveClock').textContent = fromDate.toLocaleTimeString('en-US', { hour12: false });
-            document.getElementById('fromLiveDate').textContent = fromDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', weekday: 'short' });
-
-            document.getElementById('toLiveClock').textContent = toDate.toLocaleTimeString('en-US', { hour12: false });
-            document.getElementById('toLiveDate').textContent = toDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', weekday: 'short' });
+                document.getElementById('fromLiveClock').textContent = fromTimeString;
+                document.getElementById('fromLiveDate').textContent = fromDateString;
+                document.getElementById('toLiveClock').textContent = toTimeString;
+                document.getElementById('toLiveDate').textContent = toDateString;
+            } catch (e) {
+                // Fallback offset method
+            }
         }
 
         setInterval(updateLiveClocks, 1000);
@@ -923,13 +1169,35 @@
             updateConnectionStatus();
             await Promise.all([loadAllAirports(), fetchExchangeRates()]);
 
-            if (safeGetItem('jetlag_from')) {
+            if (!safeGetItem('jetlag_cookies_accepted')) {
+                document.getElementById('cookieBanner').classList.remove('hidden');
+            }
+
+            // Check URL query parameters first (?from=...&to=...)
+            const urlParams = new URLSearchParams(window.location.search);
+            const qFrom = urlParams.get('from');
+            const qTo = urlParams.get('to');
+            const qDays = urlParams.get('days');
+            const qClass = urlParams.get('class');
+            const qChrono = urlParams.get('chrono');
+
+            if (qFrom && airports.length > 0) {
+                let fObj = airports.find(a => a.code === qFrom.toUpperCase());
+                if (fObj) selectAirport('from', fObj);
+            } else if (safeGetItem('jetlag_from')) {
                 document.getElementById('fromAirport').value = safeGetItem('jetlag_from');
                 if (safeGetItem('jetlag_from_text')) document.getElementById('fromSearch').value = safeGetItem('jetlag_from_text');
             } else {
                 document.getElementById('fromSearch').value = "Istanbul Airport (IST)";
             }
-            if (safeGetItem('jetlag_to')) {
+
+            if (qTo && airports.length > 0) {
+                let tObj = airports.find(a => a.code === qTo.toUpperCase());
+                if (tObj) {
+                    selectAirport('to', tObj);
+                    fetchWeather(tObj.lat, tObj.lon);
+                }
+            } else if (safeGetItem('jetlag_to')) {
                 document.getElementById('toAirport').value = safeGetItem('jetlag_to');
                 if (safeGetItem('jetlag_to_text')) document.getElementById('toSearch').value = safeGetItem('jetlag_to_text');
                 let parts = safeGetItem('jetlag_to').split('|');
@@ -937,17 +1205,24 @@
             } else {
                 document.getElementById('toSearch').value = "Tokyo Narita (NRT)";
             }
+
+            if (qDays) document.getElementById('tripDays').value = qDays;
+            else if (safeGetItem('jetlag_days')) document.getElementById('tripDays').value = safeGetItem('jetlag_days');
+
+            if (qClass) document.getElementById('flightClass').value = qClass;
+            else if (safeGetItem('jetlag_class')) document.getElementById('flightClass').value = safeGetItem('jetlag_class');
+
+            if (qChrono) document.getElementById('chronotype').value = qChrono;
+            else if (safeGetItem('jetlag_chronotype')) document.getElementById('chronotype').value = safeGetItem('jetlag_chronotype');
+
             if (safeGetItem('jetlag_dep_time')) document.getElementById('flightDepTime').value = safeGetItem('jetlag_dep_time');
-            if (safeGetItem('jetlag_days')) document.getElementById('tripDays').value = safeGetItem('jetlag_days');
-            if (safeGetItem('jetlag_chronotype')) document.getElementById('chronotype').value = safeGetItem('jetlag_chronotype');
-            if (safeGetItem('jetlag_class')) document.getElementById('flightClass').value = safeGetItem('jetlag_class');
             if (safeGetItem('jetlag_return') === 'true') document.getElementById('includeReturn').checked = true;
             if (safeGetItem('jetlag_custom_notes')) document.getElementById('customTravelNotes').value = safeGetItem('jetlag_custom_notes');
             if (safeGetItem('jetlag_journal')) document.getElementById('travelJournal').value = safeGetItem('jetlag_journal');
             if (safeGetItem('flight_num')) document.getElementById('flightNumber').value = safeGetItem('flight_num');
             if (safeGetItem('flight_pnr')) document.getElementById('pnrCode').value = safeGetItem('flight_pnr');
             if (safeGetItem('flight_seat')) document.getElementById('seatNumber').value = safeGetItem('flight_seat');
-            
+
             if (safeGetItem('jetlag_date')) {
                 document.getElementById('flightDate').value = safeGetItem('jetlag_date');
                 updateCountdown();
@@ -956,12 +1231,17 @@
                 setTheme(safeGetItem('jetlag_theme'), false);
             }
             updateLiveClocks();
+
+            // Auto generate if URL params exist
+            if (qFrom || qTo) {
+                generatePlan();
+            }
         }
 
         function setTheme(themeName, save = true) {
             const body = document.getElementById('pageBody');
-            body.className = "text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans transition-colors duration-500 relative overflow-x-hidden";
-            
+            body.className = "text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 font-sans transition-colors duration-500 relative overflow-x-hidden";
+
             if (themeName === 'slate') body.classList.add('bg-black');
             else if (themeName === 'indigo') body.classList.add('bg-slate-950');
             else if (themeName === 'emerald') body.classList.add('bg-emerald-950');
@@ -983,20 +1263,43 @@
             saveSettings();
 
             const isMultiCity = document.getElementById('multiCityToggle').checked;
-            
-            let fromName, toName, hourDiff, absDiff, isEast, flightHours, arrTime;
-            
+            const fromValData = document.getElementById('fromAirport').value.split('|');
+            const toValData = document.getElementById('toAirport').value.split('|');
+            const fromCode = fromValData[0] || 'IST';
+            const toCode = toValData[0] || 'NRT';
+            const tripDays = parseInt(document.getElementById('tripDays').value) || 3;
+            const flightClass = document.getElementById('flightClass').value;
+            const chronotype = document.getElementById('chronotype').value;
+
+            // Update URL via history.replaceState
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('from', fromCode);
+                urlParams.set('to', toCode);
+                urlParams.set('days', tripDays);
+                urlParams.set('class', flightClass);
+                urlParams.set('chrono', chronotype);
+                const newRelativePathQuery = window.location.pathname + '?' + urlParams.toString();
+                history.replaceState(null, '', newRelativePathQuery);
+            } catch (e) {}
+
+            let fromName, toName, hourDiff, absDiff, isEast, flightHours, arrTime, distanceKm = 0;
+
             if (isMultiCity) {
                 let totalDiff = 0;
                 let totalFlight = 0;
                 let routeString = multiCityLegs.map(l => `${l.code} (${l.depTime})`).join(' ➔ ');
-                
+
                 for(let i = 0; i < multiCityLegs.length - 1; i++) {
-                    let diff = multiCityLegs[i+1].offset - multiCityLegs[i].offset;
+                    let off1 = getTzOffsetHours(multiCityLegs[i].tz);
+                    let off2 = getTzOffsetHours(multiCityLegs[i+1].tz);
+                    let diff = off2 - off1;
                     totalDiff += diff;
-                    totalFlight += getFlightDuration(multiCityLegs[i].code, multiCityLegs[i+1].code, diff);
+                    let res = getFlightDurationAndDistance(multiCityLegs[i].code, multiCityLegs[i+1].code, multiCityLegs[i].lat, multiCityLegs[i].lon, multiCityLegs[i+1].lat, multiCityLegs[i+1].lon, diff);
+                    totalFlight += res.hours;
+                    distanceKm += res.distance;
                 }
-                
+
                 fromName = multiCityLegs[0].name;
                 toName = multiCityLegs[multiCityLegs.length - 1].name;
                 hourDiff = totalDiff;
@@ -1004,28 +1307,33 @@
                 isEast = hourDiff > 0;
                 flightHours = totalFlight;
                 arrTime = "Multi-City Arrival";
-                
+
                 document.getElementById('routeBanner').innerHTML = `<span>🌐 Multi-City Route:</span> ${routeString}`;
             } else {
-                const fromVal = document.getElementById('fromAirport').value;
-                const toVal = document.getElementById('toAirport').value;
                 const depTimeInput = document.getElementById('flightDepTime').value || "10:00";
-                
-                const fromData = fromVal ? fromVal.split('|') : ["IST", "Istanbul Airport (IST)", "3"];
-                const toData = toVal ? toVal.split('|') : ["NRT", "Tokyo Narita (NRT)", "9"];
-                
-                const fromCode = fromData[0];
-                fromName = fromData[1];
-                const fromOffset = parseInt(fromData[2]) || 0;
+                const fromData = fromValData;
+                const toData = toValData;
 
-                const toCode = toData[0];
+                fromName = fromData[1];
+                let fromTz = fromData[2] || 'UTC';
+                let fromLat = parseFloat(fromData[3]) || 0;
+                let fromLon = parseFloat(fromData[4]) || 0;
+
                 toName = toData[1];
-                const toOffset = parseInt(toData[2]) || 0;
-                
+                let toTz = toData[2] || 'UTC';
+                let toLat = parseFloat(toData[3]) || 0;
+                let toLon = parseFloat(toData[4]) || 0;
+
+                let fromOffset = getTzOffsetHours(fromTz);
+                let toOffset = getTzOffsetHours(toTz);
+
                 hourDiff = toOffset - fromOffset;
                 absDiff = Math.abs(hourDiff);
                 isEast = hourDiff > 0;
-                flightHours = getFlightDuration(fromCode, toCode, hourDiff);
+
+                let calcRes = getFlightDurationAndDistance(fromCode, toCode, fromLat, fromLon, toLat, toLon, hourDiff);
+                flightHours = calcRes.hours;
+                distanceKm = calcRes.distance;
 
                 let [depH, depM] = depTimeInput.split(':').map(Number);
                 const depTimeInUTC = depH - fromOffset;
@@ -1038,10 +1346,7 @@
                 document.getElementById('routeBanner').innerHTML = `<span>✈️</span> ${fromName} ➔ ${toName} <span class="text-xs bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-full border border-indigo-500/30 ml-2">${directionDesc}</span>`;
             }
 
-            const chronotype = document.getElementById('chronotype').value;
-            const flightClass = document.getElementById('flightClass').value;
             const includeReturn = document.getElementById('includeReturn').checked;
-            const tripDays = parseInt(document.getElementById('tripDays').value) || 3;
 
             const severityScore = document.getElementById('severityScore');
             const severityText = document.getElementById('severityText');
@@ -1061,9 +1366,11 @@
             const planList = document.getElementById('planList');
             const tripSchedule = document.getElementById('tripSchedule');
             const cityScheduleTitle = document.getElementById('cityScheduleTitle');
-            
-            flightDurationBadge.textContent = `~${flightHours} Hours`;
-            flightDurationText.textContent = isMultiCity ? `Total Route Duration & Stops` : `Departure: 10:00 | Arrival: ~${arrTime}`;
+            const affiliateContainer = document.getElementById('affiliateContainer');
+
+            flightDurationBadge.textContent = `~${flightHours} Hours (${distanceKm.toLocaleString()} km)`;
+            let depTimeVal = document.getElementById('flightDepTime').value;
+            flightDurationText.textContent = isMultiCity ? `Total Route Duration & Stops` : `Departure: ${depTimeVal} | Arrival: ~${arrTime}`;
 
             let risk = absDiff * 9 + (isEast ? 15 : 5);
             if (isMultiCity) risk += 20;
@@ -1089,7 +1396,7 @@
                 row.innerHTML = `
                     <span class="font-semibold text-teal-200">Day ${i} Energy Level:</span>
                     <div class="flex items-center gap-2">
-                        <input type="range" min="1" max="10" value="${savedVal}" onchange="safeSetItem('${checkKey}', this.value); document.getElementById('val_${i}').textContent = this.value;" class="accent-teal-500 cursor-pointer">
+                        <input type="range" min="1" max="10" value="${savedVal}" onchange="safeSetItem('${checkKey}', this.value); document.getElementById('val_${i}').textContent = this.value;" aria-label="Day Energy Level" class="accent-teal-500 cursor-pointer">
                         <span id="val_${i}" class="font-bold text-cyan-300 w-4 text-center">${savedVal}</span>
                     </div>
                 `;
@@ -1104,7 +1411,7 @@
             flightTimeline.innerHTML = '';
             planList.innerHTML = '';
             tripSchedule.innerHTML = '';
-            
+
             let targetCityShort = toName.split(' ')[0];
             cityScheduleTitle.innerHTML = `<span>🗺️</span> ${tripDays}-Day Enriched Schedule for ${targetCityShort}:`;
 
@@ -1129,7 +1436,7 @@
             preFlightShift.innerHTML = `<div>• <strong>3 Days Before Flight:</strong> Shift your sleep schedule by <strong>${shiftText}</strong> each night.</div>`;
 
             let melatoninTime = isEast ? "1 hour before bedtime (local time 22:00)" : "Arrival evening at local time 23:00";
-            
+
             melatoninPlan.innerHTML = `
                 <div>• <strong>Optimal Timing:</strong> ${melatoninTime} 1-3mg low dose can be taken.</div>
                 <div>• <strong>Duration:</strong> Can be used for the first 3 days to support your body's adjustment to the new time zone.</div>
@@ -1155,26 +1462,55 @@
                 returnTripSection.classList.add('hidden');
             }
 
-            let items = [
-                "Passport, Visas & Flight Tickets",
-                "In-Flight Travel Pillow & Eye Mask",
-                "Noise-Canceling Earplugs",
-                "Electrolyte Powder / Multivitamin",
-                `${targetCityShort} compatible Power Adapter`,
-                "Powerbank & Charging Cables",
-                "Compression Flight Socks",
-                "Personal Prescription Medications"
+            // Affiliate Packing List with Amazon Search Links (No Melatonin links)
+            let rawItems = [
+                { name: "Passport, Visas & Flight Tickets", search: "passport holder travel organizer" },
+                { name: "In-Flight Travel Pillow & Eye Mask", search: "travel neck pillow and sleep eye mask" },
+                { name: "Noise-Canceling Earplugs", search: "noise canceling earplugs for flying" },
+                { name: "Electrolyte Powder / Multivitamin", search: "electrolyte hydration powder packets" },
+                { name: `${targetCityShort} compatible Power Adapter`, search: "universal travel adapter" },
+                { name: "Powerbank & Charging Cables", search: "slim fast charging powerbank 20000mah" },
+                { name: "Compression Flight Socks", search: "flight compression socks for circulation" },
+                { name: "Personal Prescription Medications", search: "pill organizer travel case" }
             ];
 
-            items.forEach((item, index) => {
+            rawItems.forEach((itemObj, index) => {
                 let storageKey = `packing_item_${index}`;
                 let isChecked = safeGetItem(storageKey) === 'true';
+                let amazonUrl = `https://www.amazon.com/s?k=${encodeURIComponent(itemObj.search)}&tag=${AFFILIATE_LINKS.amazonTag}`;
 
-                let div = document.createElement('label');
-                div.className = "flex items-center gap-2 cursor-pointer hover:text-white transition";
-                div.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''} onchange="safeSetItem('${storageKey}', this.checked)" class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0 w-4 h-4"> <span>${item}</span>`;
+                let div = document.createElement('div');
+                div.className = "flex items-center justify-between gap-2 hover:text-white transition";
+                div.innerHTML = `
+                    <label class="flex items-center gap-2 cursor-pointer flex-1">
+                        <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="safeSetItem('${storageKey}', this.checked)" aria-label="${itemObj.name}" class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0 w-4 h-4"> 
+                        <span>${itemObj.name}</span>
+                    </label>
+                    <a href="${amazonUrl}" target="_blank" rel="sponsored noopener" class="text-[10px] text-amber-400 hover:underline shrink-0">View Item ↗</a>
+                `;
                 packingList.appendChild(div);
             });
+
+            // Populate Affiliate Blocks in Result Screen
+            let bookingQueryUrl = `${AFFILIATE_LINKS.booking}${encodeURIComponent(targetCityShort)}`;
+            affiliateContainer.innerHTML = `
+                <a href="${AFFILIATE_LINKS.skyscanner}" target="_blank" rel="sponsored noopener" class="bg-slate-800/80 hover:bg-slate-800 border border-slate-700 p-3 rounded-xl flex items-center justify-between text-xs transition">
+                    <div><strong class="text-white block">✈️ Search Flights</strong><span class="text-slate-400 text-[10px]">Compare airlines & deals</span></div>
+                    <span class="text-indigo-400">Find ↗</span>
+                </a>
+                <a href="${bookingQueryUrl}" target="_blank" rel="sponsored noopener" class="bg-slate-800/80 hover:bg-slate-800 border border-slate-700 p-3 rounded-xl flex items-center justify-between text-xs transition">
+                    <div><strong class="text-white block">🏨 Book Hotels</strong><span class="text-slate-400 text-[10px]">Best stays in ${targetCityShort}</span></div>
+                    <span class="text-indigo-400">Explore ↗</span>
+                </a>
+                <a href="${AFFILIATE_LINKS.airalo}" target="_blank" rel="sponsored noopener" class="bg-slate-800/80 hover:bg-slate-800 border border-slate-700 p-3 rounded-xl flex items-center justify-between text-xs transition">
+                    <div><strong class="text-white block">📱 Get eSIM</strong><span class="text-slate-400 text-[10px]">Instant mobile data abroad</span></div>
+                    <span class="text-indigo-400">Buy ↗</span>
+                </a>
+                <a href="${AFFILIATE_LINKS.safetywing}" target="_blank" rel="sponsored noopener" class="bg-slate-800/80 hover:bg-slate-800 border border-slate-700 p-3 rounded-xl flex items-center justify-between text-xs transition">
+                    <div><strong class="text-white block">🛡️ Travel Insurance</strong><span class="text-slate-400 text-[10px]">Nomad & trip coverage</span></div>
+                    <span class="text-indigo-400">Check ↗</span>
+                </a>
+            `;
 
             let timelineSteps = [
                 { time: "First Hour After Takeoff", action: "Set your watch to destination local time immediately and drink your first glass of water." },
@@ -1224,6 +1560,10 @@
                 tripSchedule.appendChild(dayBox);
             }
 
+            // Setup Email Report Mailto Link
+            let reportText = `JetLag & Ultimate Pro Route Report:\nRoute: ${fromName} to ${toName}\nRisk Score: %${risk}\nFlight Duration: ~${flightHours} Hours (${distanceKm.toLocaleString()} km)\n`;
+            document.getElementById('emailReportBtn').href = `mailto:?subject=${encodeURIComponent("My Jet Lag & Flight Plan")}&body=${encodeURIComponent(reportText)}`;
+
             document.getElementById('result').classList.remove('hidden');
         }
 
@@ -1237,10 +1577,7 @@
         }
 
         function shareOnWhatsApp() {
-            let text = `✈️ JetLag & Ultimate Route Plan:\n\n`;
-            document.querySelectorAll('#result div, #result li').forEach((el) => {
-                if(el.innerText) text += `${el.innerText}\n`;
-            });
+            let text = `✈️ JetLag & Ultimate Route Plan: ${window.location.href}`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
         }
 
