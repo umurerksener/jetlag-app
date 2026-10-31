@@ -141,7 +141,7 @@
         <button onclick="acceptCookies()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition">Accept</button>
     </div>
 
-    <!-- SOL ÜST KÖŞE: Modern Aramalı 100+ Dil Seçici (Mobil Takılmasız - notranslate Zırhlı) -->
+    <!-- SOL ÜST KÖŞE: Modern Aramalı 100+ Dil Seçici -->
     <div id="langWidgetWrapper" class="fixed top-6 left-6 z-50 notranslate" translate="no">
         <button onclick="toggleLangModal()" aria-label="Select Language" class="bg-slate-900/90 backdrop-blur-md px-3.5 py-2.5 rounded-2xl border border-slate-700 hover:border-indigo-500/60 shadow-2xl flex items-center gap-2 text-slate-200 hover:text-white transition active:scale-95">
             <span class="text-sm">🌐</span>
@@ -244,7 +244,7 @@
     <main class="w-full max-w-2xl my-8 z-10 space-y-8">
         <div class="bg-slate-900/90 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl border border-slate-800">
 
-            <!-- B2B Partner Banner (?partner=SirketAdi parametresiyle otomatik açılır) -->
+            <!-- B2B Partner Banner -->
             <div id="b2bPartnerBanner" class="hidden mb-6 bg-gradient-to-r from-indigo-600/30 to-cyan-600/30 border border-indigo-400/40 rounded-2xl p-3 text-center text-xs text-indigo-100 font-medium shadow-lg">
                 ✨ Official Smart Flight & Circadian Assistant provided by <strong id="b2bPartnerName" class="text-white underline"></strong>
             </div>
@@ -256,7 +256,7 @@
                 <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-semibold">Ultimate Elite Travel & Circadian Rhythm Assistant</p>
             </header>
 
-            <!-- Canlı Dünya Saatleri & Tarih Barı (Çeviriye Karşı Korumalı: notranslate) -->
+            <!-- Canlı Dünya Saatleri & Tarih Barı -->
             <div class="mb-6 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700/80 flex items-center justify-around text-center notranslate" translate="no">
                 <div>
                     <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold" id="fromClockLabel">Departure</span>
@@ -271,7 +271,7 @@
                 </div>
             </div>
 
-            <!-- Canlı Geri Sayım Widget'ı (Çeviriye Karşı Korumalı: notranslate) -->
+            <!-- Canlı Geri Sayım Widget'ı -->
             <div class="mb-6 bg-indigo-950/40 p-4 rounded-2xl border border-indigo-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 notranslate" translate="no">
                 <div class="text-xs text-indigo-200 font-medium">⏳ Time Until Trip:</div>
                 <div class="flex items-center gap-2">
@@ -281,7 +281,7 @@
             </div>
 
             <section class="space-y-6">
-                <!-- Akıllı Arama Havalimanı Seçimi (Tek Yön / Normal Mod) -->
+                <!-- Akıllı Arama Havalimanı Seçimi -->
                 <div id="singleRouteSection" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/60 relative">
                         <label for="fromSearch" class="block text-xs font-bold uppercase tracking-wider mb-2 text-indigo-400">Departure Airport:</label>
@@ -469,7 +469,7 @@
                     </div>
                 </div>
 
-                <!-- Gelişmiş Akıllı Valiz Listesi -->
+                <!-- Şehre Özel Akıllı Valiz Listesi -->
                 <div class="bg-emerald-950/30 border border-emerald-500/30 p-4 rounded-2xl space-y-2">
                     <h3 class="font-bold text-emerald-300 flex items-center gap-2 text-base">
                         <span>🧳</span> City-Specific Smart Packing List:
@@ -496,15 +496,6 @@
                         <span>🗺️</span> City Exploration Schedule:
                     </h3>
                     <div id="tripSchedule" class="space-y-3 text-sm text-slate-300"></div>
-                </div>
-
-                <!-- GELİR: AFFILIATE BLOKLARI (Sonuç Ekranı) -->
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-3">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-amber-400">✈️ Plan Ready, Now Complete Your Journey</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="affiliateContainer">
-                        <!-- JS ile doldurulacak dinamik link kartları -->
-                    </div>
-                    <p class="text-[10px] text-slate-500 italic text-center mt-2">This page contains affiliate links; there is no extra cost to you.</p>
                 </div>
 
                 <!-- VİRAL PAYLAŞIM ALANI -->
@@ -535,7 +526,7 @@
             </div>
         </div>
 
-        <!-- FAQ / SSS BÖLÜMÜ (Semantik & SEO Uyumlu) -->
+        <!-- FAQ / SSS BÖLÜMÜ -->
         <section class="bg-slate-900/90 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl border border-slate-800 space-y-4">
             <h2 class="text-xl font-bold text-white mb-4">Frequently Asked Questions About Jet Lag</h2>
             <div class="space-y-4 text-xs text-slate-300">
@@ -587,16 +578,14 @@
         </section>
     </main>
 
-    <!-- FOOTER -->
+    <!-- FOOTER (Dış linklerden arındırılmış, temiz sürüm) -->
     <footer class="w-full max-w-2xl text-center py-6 border-t border-slate-800 text-[11px] text-slate-500 space-y-3 z-10">
         <div class="flex items-center justify-center gap-4 flex-wrap">
-            <a href="#" class="hover:text-slate-300 transition">Privacy Policy</a>
+            <a href="#privacy" class="hover:text-slate-300 transition">Privacy Policy</a>
             <span>•</span>
-            <a href="#" class="hover:text-slate-300 transition">Terms of Use</a>
+            <a href="#terms" class="hover:text-slate-300 transition">Terms of Use</a>
             <span>•</span>
-            <a href="#" class="hover:text-slate-300 transition">Contact</a>
-            <span>•</span>
-            <a href="https://buymeacoffee.com/YOUR_ID_HERE" target="_blank" rel="noopener" class="text-amber-400 font-semibold hover:underline">☕ Support This Site</a>
+            <a href="#contact" class="hover:text-slate-300 transition">Contact</a>
         </div>
         <p><strong>Medical Disclaimer:</strong> This web application is for informational and educational purposes only. It does not constitute medical advice. Always consult a professional physician regarding health conditions or medication use.</p>
         <p>© 2026 JetLag & Global Rota. All rights reserved.</p>
@@ -689,7 +678,6 @@
             } catch(e) {}
         }
 
-        // Dil kutusu dışına tıklandığında kapatma
         document.addEventListener('click', (e) => {
             const wrapper = document.getElementById('langWidgetWrapper');
             const modal = document.getElementById('langModal');
@@ -705,16 +693,6 @@
         let exchangeRates = {};
         let deferredPrompt = null;
 
-        // AFFILIATE CONFIGURATION PLACEHOLDERS
-        const AFFILIATE_LINKS = {
-            aviasales: "https://www.aviasales.com/?marker=YOUR_ID_HERE",
-            skyscanner: "https://www.skyscanner.com/transport/flights/?associateid=YOUR_ID_HERE",
-            booking: "https://www.booking.com/searchresults.html?aid=YOUR_ID_HERE&ss=",
-            safetywing: "https://safetywing.com/nomad-insurance/?referenceID=YOUR_ID_HERE",
-            airalo: "https://www.airalo.com/?partnerId=YOUR_ID_HERE",
-            amazonTag: "YOUR_TAG"
-        };
-
         let multiCityLegs = [
             { code: "IST", name: "Istanbul Airport (IST)", tz: "Europe/Istanbul", lat: 41.27, lon: 28.75, depTime: "10:00" },
             { code: "LHR", name: "London Heathrow (LHR)", tz: "Europe/London", lat: 51.47, lon: -0.45, depTime: "15:00" }
@@ -725,7 +703,6 @@
             document.getElementById('cookieBanner').classList.add('hidden');
         }
 
-        // B2B Partner Modülü (?partner=SirketAdi)
         (function checkB2BPartner() {
             try {
                 const params = new URLSearchParams(window.location.search);
@@ -737,7 +714,6 @@
             } catch (e) {}
         })();
 
-        // Bağlantı Durumu Göstergesi
         function updateConnectionStatus() {
             const statusEl = document.getElementById('connectionStatus');
             if (navigator.onLine) {
@@ -770,7 +746,6 @@
             }
         }
 
-        // Güçlendirilmiş Service Worker (Çevrimdışı Tam Destek)
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const swCode = `
@@ -793,7 +768,6 @@
             });
         }
 
-        // HAVALİMANLARINI ÇEKME VE LOCALSTORAGE OFFLINE ÖNBELLEKLEME
         async function loadAllAirports() {
             try {
                 let res = await fetch('https://raw.githubusercontent.com/mwgg/Airports/master/airports.json');
@@ -818,9 +792,7 @@
             } catch (e) {
                 let cached = safeGetItem('jetlag_cached_airports');
                 if (cached) {
-                    try {
-                        airports = JSON.parse(cached);
-                    } catch(err) {}
+                    try { airports = JSON.parse(cached); } catch(err) {}
                 }
                 if (airports.length === 0) {
                     airports = [
@@ -836,7 +808,6 @@
             }
         }
 
-        // DÖVİZ KURLARINI ÇEKME VE LOCALSTORAGE ÖNBELLEKLEME
         async function fetchExchangeRates() {
             try {
                 let res = await fetch('https://open.er-api.com/v6/latest/USD');
@@ -982,9 +953,8 @@
             "IST-BCN": 3.5, "IST-DXB": 4.5, "IST-JFK": 11, "IST-LAX": 13, "IST-NRT": 11.5, "IST-SIN": 10
         };
 
-        // Haversine Distance Formula
         function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Earth radius in km
+            const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -1008,7 +978,7 @@
                 hours = 0;
             } else {
                 distKm = calculateHaversineDistance(lat1, lon1, lat2, lon2);
-                hours = (distKm / 850) + 0.5; // speed ~850 km/h + takeoff/landing pad
+                hours = (distKm / 850) + 0.5;
             }
 
             if (distKm === 0 && (lat1 !== 0 || lon1 !== 0) && (lat2 !== 0 || lon2 !== 0)) {
@@ -1018,7 +988,6 @@
             return { hours: Math.round(hours * 10) / 10, distance: Math.round(distKm) };
         }
 
-        // IANA Timezone Offset Helper
         function getTzOffsetHours(tzName, date = new Date()) {
             try {
                 const tzString = date.toLocaleString('en-US', { timeZone: tzName, timeZoneName: 'shortOffset' });
@@ -1120,9 +1089,7 @@
                 document.getElementById('fromLiveDate').textContent = fromDateString;
                 document.getElementById('toLiveClock').textContent = toTimeString;
                 document.getElementById('toLiveDate').textContent = toDateString;
-            } catch (e) {
-                // Fallback offset method
-            }
+            } catch (e) {}
         }
 
         setInterval(updateLiveClocks, 1000);
@@ -1173,7 +1140,6 @@
                 document.getElementById('cookieBanner').classList.remove('hidden');
             }
 
-            // Check URL query parameters first (?from=...&to=...)
             const urlParams = new URLSearchParams(window.location.search);
             const qFrom = urlParams.get('from');
             const qTo = urlParams.get('to');
@@ -1232,7 +1198,6 @@
             }
             updateLiveClocks();
 
-            // Auto generate if URL params exist
             if (qFrom || qTo) {
                 generatePlan();
             }
@@ -1271,7 +1236,6 @@
             const flightClass = document.getElementById('flightClass').value;
             const chronotype = document.getElementById('chronotype').value;
 
-            // Update URL via history.replaceState
             try {
                 const urlParams = new URLSearchParams(window.location.search);
                 urlParams.set('from', fromCode);
@@ -1336,8 +1300,8 @@
                 distanceKm = calcRes.distance;
 
                 let [depH, depM] = depTimeInput.split(':').map(Number);
-                const depTimeInUTC = depH - fromOffset;
-                const arrTimeInUTC = depTimeInUTC + flightHours;
+                let depTimeInUTC = depH - fromOffset;
+                let arrTimeInUTC = depTimeInUTC + flightHours;
                 let calculatedArrLocalHour = (arrTimeInUTC + toOffset) % 24;
                 if (calculatedArrLocalHour < 0) calculatedArrLocalHour += 24;
                 arrTime = `${String(Math.floor(calculatedArrLocalHour)).padStart(2, '0')}:00`;
@@ -1366,7 +1330,6 @@
             const planList = document.getElementById('planList');
             const tripSchedule = document.getElementById('tripSchedule');
             const cityScheduleTitle = document.getElementById('cityScheduleTitle');
-            const affiliateContainer = document.getElementById('affiliateContainer');
 
             flightDurationBadge.textContent = `~${flightHours} Hours (${distanceKm.toLocaleString()} km)`;
             let depTimeVal = document.getElementById('flightDepTime').value;
@@ -1462,22 +1425,20 @@
                 returnTripSection.classList.add('hidden');
             }
 
-            // Affiliate Packing List with Amazon Search Links (No Melatonin links)
             let rawItems = [
-                { name: "Passport, Visas & Flight Tickets", search: "passport holder travel organizer" },
-                { name: "In-Flight Travel Pillow & Eye Mask", search: "travel neck pillow and sleep eye mask" },
-                { name: "Noise-Canceling Earplugs", search: "noise canceling earplugs for flying" },
-                { name: "Electrolyte Powder / Multivitamin", search: "electrolyte hydration powder packets" },
-                { name: `${targetCityShort} compatible Power Adapter`, search: "universal travel adapter" },
-                { name: "Powerbank & Charging Cables", search: "slim fast charging powerbank 20000mah" },
-                { name: "Compression Flight Socks", search: "flight compression socks for circulation" },
-                { name: "Personal Prescription Medications", search: "pill organizer travel case" }
+                { name: "Passport, Visas & Flight Tickets" },
+                { name: "In-Flight Travel Pillow & Eye Mask" },
+                { name: "Noise-Canceling Earplugs" },
+                { name: "Electrolyte Powder / Multivitamin" },
+                { name: `${targetCityShort} compatible Power Adapter` },
+                { name: "Powerbank & Charging Cables" },
+                { name: "Compression Flight Socks" },
+                { name: "Personal Prescription Medications" }
             ];
 
             rawItems.forEach((itemObj, index) => {
                 let storageKey = `packing_item_${index}`;
                 let isChecked = safeGetItem(storageKey) === 'true';
-                let amazonUrl = `https://www.amazon.com/s?k=${encodeURIComponent(itemObj.search)}&tag=${AFFILIATE_LINKS.amazonTag}`;
 
                 let div = document.createElement('div');
                 div.className = "flex items-center justify-between gap-2 hover:text-white transition";
@@ -1486,31 +1447,9 @@
                         <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="safeSetItem('${storageKey}', this.checked)" aria-label="${itemObj.name}" class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0 w-4 h-4"> 
                         <span>${itemObj.name}</span>
                     </label>
-                    <a href="${amazonUrl}" target="_blank" rel="sponsored noopener" class="text-[10px] text-amber-400 hover:underline shrink-0">View Item ↗</a>
                 `;
                 packingList.appendChild(div);
             });
-
-            // Populate Affiliate Blocks in Result Screen
-            let bookingQueryUrl = `${AFFILIATE_LINKS.booking}${encodeURIComponent(targetCityShort)}`;
-            affiliateContainer.innerHTML = `
-                <a href="${AFFILIATE_LINKS.skyscanner}" target="_blank" rel="sponsored noopener" class="bg-slate-800/80 hover:bg-slate-800 border border-slate-700 p-3 rounded-xl flex items-center justify-between text-xs transition">
-                    <div><strong class="text-white block">✈️ Search Flights</strong><span class="text-slate-400 text-[10px]">Compare airlines & deals</span></div>
-                    <span class="text-indigo-400">Find ↗</span>
-                </a>
-                <a href="${bookingQueryUrl}" target="_blank" rel="sponsored noopener" class="bg-slate-800/80 hover:bg-slate-800 border border-slate-700 p-3 rounded-xl flex items-center justify-between text-xs transition">
-                    <div><strong class="text-white block">🏨 Book Hotels</strong><span class="text-slate-400 text-[10px]">Best stays in ${targetCityShort}</span></div>
-                    <span class="text-indigo-400">Explore ↗</span>
-                </a>
-                <a href="${AFFILIATE_LINKS.airalo}" target="_blank" rel="sponsored noopener" class="bg-slate-800/80 hover:bg-slate-800 border border-slate-700 p-3 rounded-xl flex items-center justify-between text-xs transition">
-                    <div><strong class="text-white block">📱 Get eSIM</strong><span class="text-slate-400 text-[10px]">Instant mobile data abroad</span></div>
-                    <span class="text-indigo-400">Buy ↗</span>
-                </a>
-                <a href="${AFFILIATE_LINKS.safetywing}" target="_blank" rel="sponsored noopener" class="bg-slate-800/80 hover:bg-slate-800 border border-slate-700 p-3 rounded-xl flex items-center justify-between text-xs transition">
-                    <div><strong class="text-white block">🛡️ Travel Insurance</strong><span class="text-slate-400 text-[10px]">Nomad & trip coverage</span></div>
-                    <span class="text-indigo-400">Check ↗</span>
-                </a>
-            `;
 
             let timelineSteps = [
                 { time: "First Hour After Takeoff", action: "Set your watch to destination local time immediately and drink your first glass of water." },
@@ -1560,7 +1499,6 @@
                 tripSchedule.appendChild(dayBox);
             }
 
-            // Setup Email Report Mailto Link
             let reportText = `JetLag & Ultimate Pro Route Report:\nRoute: ${fromName} to ${toName}\nRisk Score: %${risk}\nFlight Duration: ~${flightHours} Hours (${distanceKm.toLocaleString()} km)\n`;
             document.getElementById('emailReportBtn').href = `mailto:?subject=${encodeURIComponent("My Jet Lag & Flight Plan")}&body=${encodeURIComponent(reportText)}`;
 
