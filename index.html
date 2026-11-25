@@ -3,18 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jet Lag Calculator – Free Sleep, Light & Melatonin Plan for Any Flight</title>
+    <title>JetLag & Global Rota – Smart Flight & Circadian Rhythm Assistant</title>
     <meta name="description" content="Calculate your personalized jet lag recovery plan instantly. Get custom sleep schedules, melatonin timing, and light exposure guides for any global flight route.">
     <link rel="canonical" href="https://jetlag-app-nu.vercel.app/">
 
+    <!-- Özel SVG Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%236366f1'/%3E%3Cstop offset='100%25' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%230f172a'/%3E%3Ccircle cx='32' cy='32' r='22' fill='none' stroke='url(%23g)' stroke-width='3' stroke-dasharray='95 25'/%3E%3Cpath d='M43 21L29 31l-9-3-3 3 8 6-3 7 3 1 6-6 7 7 3-3-3-9 9-12c1-1.5-.5-3-2-2z' fill='url(%23g)'/%3E%3C/svg%3E">
+
     <!-- Open Graph / Social Media Meta Tags -->
-    <meta property="og:title" content="Jet Lag Calculator – Free Sleep, Light & Melatonin Plan for Any Flight">
+    <meta property="og:title" content="JetLag & Global Rota – Smart Flight & Circadian Rhythm Assistant">
     <meta property="og:description" content="Beat jet lag with a customized sleep, melatonin, and light exposure schedule based on your flight route and chronotype.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://jetlag-app-nu.vercel.app/">
     <meta property="og:image" content="https://jetlag-app-nu.vercel.app/og-image.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Jet Lag Calculator – Free Sleep, Light & Melatonin Plan for Any Flight">
+    <meta name="twitter:title" content="JetLag & Global Rota – Smart Flight & Circadian Rhythm Assistant">
     <meta name="twitter:description" content="Calculate your personalized jet lag recovery plan instantly.">
     <meta name="twitter:image" content="https://jetlag-app-nu.vercel.app/og-image.jpg">
 
@@ -142,7 +145,6 @@
             <span class="text-[10px] text-slate-400">▼</span>
         </button>
 
-        <!-- Açılır Dil Arama Kutusu -->
         <div id="langModal" class="hidden mt-2 w-72 sm:w-80 bg-slate-900/95 backdrop-blur-2xl border border-slate-700 rounded-2xl shadow-2xl p-3">
             <div class="flex items-center gap-2 bg-slate-950 rounded-xl px-3 py-2 mb-2 border border-slate-800 focus-within:border-indigo-500 transition">
                 <span class="text-slate-400 text-xs">🔍</span>
@@ -152,7 +154,6 @@
             <div id="langListContainer" class="max-h-60 overflow-y-auto space-y-1 pr-1" style="-webkit-overflow-scrolling: touch;"></div>
         </div>
 
-        <!-- Gizli Google Çeviri Çekirdeği -->
         <div id="google_translate_element" class="hidden"></div>
     </div>
 
@@ -248,15 +249,32 @@
     <main class="w-full max-w-2xl my-8 z-10 space-y-8">
         <div class="bg-slate-900/90 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl border border-slate-800">
 
-            <!-- B2B Kurumsal Partner Banner (Logo & İsim Destekli) -->
-            <div id="b2bPartnerBanner" class="hidden mb-6 bg-gradient-to-r from-indigo-600/30 to-cyan-600/30 border border-indigo-400/40 rounded-2xl p-3.5 text-center text-xs text-indigo-100 font-medium shadow-lg flex items-center justify-center gap-3 flex-wrap notranslate" translate="no">
-                <img id="b2bPartnerLogo" src="" alt="Partner Logo" class="hidden h-7 w-auto object-contain rounded-md bg-white/95 px-2 py-0.5 shadow" onerror="this.classList.add('hidden')">
-                <span>✨ <strong id="b2bPartnerName" class="text-white underline"></strong> misafirlerine özel Akıllı Uçuş & JetLag Asistanı</span>
+            <!-- B2B Kurumsal Partner Banner (Otomatik Logo & Rozet Destekli) -->
+            <div id="b2bPartnerBanner" class="hidden mb-6 bg-gradient-to-r from-indigo-600/30 via-slate-800/80 to-cyan-600/30 border border-indigo-400/50 rounded-2xl p-3.5 text-center text-xs text-indigo-100 font-medium shadow-lg flex items-center justify-center gap-3 flex-wrap notranslate" translate="no">
+                <div id="b2bLogoWrapper" class="flex items-center justify-center">
+                    <img id="b2bPartnerLogo" src="" alt="Partner Logo" class="hidden h-8 w-auto max-w-[110px] object-contain rounded-lg bg-white px-2 py-1 shadow-md">
+                    <span id="b2bPartnerBadge" class="hidden h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-500 text-white font-black text-xs flex items-center justify-center shadow-md"></span>
+                </div>
+                <span><strong id="b2bPartnerName" class="text-white font-bold"></strong> misafirlerine özel Akıllı Uçuş & JetLag Asistanı</span>
             </div>
 
-            <!-- Başlık -->
+            <!-- Özel Vektörel Uygulama Logosu & Başlık -->
             <header class="text-center mb-6">
-                <span class="text-4xl mb-2 inline-block">✈️</span>
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-cyan-500/20 border border-indigo-500/40 shadow-lg shadow-indigo-500/10 mb-3">
+                    <svg class="w-10 h-10" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="jetlagLogoGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#818cf8"/>
+                                <stop offset="100%" stop-color="#22d3ee"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- Sirkadiyen Ritim Çemberi -->
+                        <circle cx="32" cy="32" r="24" stroke="url(#jetlagLogoGrad)" stroke-width="3" stroke-linecap="round" stroke-dasharray="105 28"/>
+                        <circle cx="32" cy="8" r="2.5" fill="#22d3ee"/>
+                        <!-- Modern Jet İkonu -->
+                        <path d="M44.5 19.5L28.5 30.5L18.5 27.2L15.5 30.2L24.5 36.8L21.2 44.5L24.2 45.8L30.8 39.2L38.5 47L41.5 44L38.2 34L48 21.5C49.2 20 46 18.3 44.5 19.5Z" fill="url(#jetlagLogoGrad)"/>
+                    </svg>
+                </div>
                 <h1 class="text-3xl font-black tracking-tight text-white bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">JetLag & Global Rota</h1>
                 <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-semibold">Ultimate Elite Travel & Circadian Rhythm Assistant</p>
             </header>
@@ -370,7 +388,6 @@
             <div id="result" class="mt-8 hidden bg-slate-950/80 p-6 rounded-2xl border border-slate-800 space-y-6">
                 <div id="routeBanner" class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-500/30 text-indigo-200 font-bold text-center text-lg flex items-center justify-center gap-2 flex-wrap"></div>
 
-                <!-- Jet Lag Şiddeti Skoru & Uçuş Süresi Kartı -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="bg-blue-950/40 border border-blue-500/30 p-4 rounded-2xl flex items-center justify-between gap-2">
                         <div>
@@ -389,7 +406,6 @@
                     </div>
                 </div>
 
-                <!-- Uçuş İçi Akıllı Uyku Reçetesi -->
                 <div class="bg-purple-950/40 border border-purple-500/40 p-4 rounded-2xl space-y-2">
                     <h3 class="font-bold text-purple-300 flex items-center gap-2 text-base">
                         <span>✈️💤</span> In-Flight Smart Sleep Prescription:
@@ -397,7 +413,6 @@
                     <div id="flightSleepPrescription" class="text-sm space-y-1 text-purple-200/90"></div>
                 </div>
 
-                <!-- Sirkadiyen Egzersiz Protokolü -->
                 <div class="bg-teal-950/40 border border-teal-500/40 p-4 rounded-2xl space-y-2">
                     <h3 class="font-bold text-teal-300 flex items-center gap-2 text-base">
                         <span>🏃‍♂️🧘‍♀️</span> Circadian Adaptation & Exercise Protocol:
@@ -405,7 +420,6 @@
                     <div id="exerciseProtocol" class="text-sm space-y-1.5 text-teal-200/90"></div>
                 </div>
 
-                <!-- Günlük Enerji & Adaptasyon Takipçisi -->
                 <div class="bg-teal-950/30 border border-teal-500/30 p-4 rounded-2xl space-y-3">
                     <h3 class="font-bold text-teal-300 flex items-center gap-2 text-base">
                         <span>📈</span> Daily Energy & Adaptation Tracker (Check-in):
@@ -414,7 +428,6 @@
                     <div id="dailyCheckInContainer" class="space-y-2"></div>
                 </div>
 
-                <!-- Uçuş Öncesi Uyku Protokolü -->
                 <div class="bg-purple-950/30 border border-purple-500/30 p-4 rounded-2xl space-y-2">
                     <h3 class="font-bold text-purple-300 flex items-center gap-2 text-base">
                         <span>🌙</span> Pre-Flight Sleep Shifting Schedule:
@@ -422,7 +435,6 @@
                     <div id="preFlightShift" class="text-sm space-y-1 text-purple-200/90"></div>
                 </div>
 
-                <!-- Melatonin & Takviye Alarmı -->
                 <div class="bg-pink-950/30 border border-pink-500/30 p-4 rounded-2xl space-y-2">
                     <h3 class="font-bold text-pink-300 flex items-center gap-2 text-base">
                         <span>💊</span> Melatonin & Circadian Supplement Plan:
@@ -430,7 +442,6 @@
                     <div id="melatoninPlan" class="text-sm space-y-1.5 text-pink-200/90"></div>
                 </div>
 
-                <!-- Hidratasyon Kutusu -->
                 <div class="bg-cyan-950/30 border border-cyan-500/30 p-4 rounded-2xl space-y-2">
                     <h3 class="font-bold text-cyan-300 flex items-center gap-2 text-base">
                         <span>💧</span> In-Flight Hydration Prescription:
@@ -438,7 +449,6 @@
                     <div id="hydrationPlan" class="text-sm space-y-1 text-cyan-200/90"></div>
                 </div>
 
-                <!-- Kafein & Alkol Alarm Kutusu -->
                 <div class="bg-amber-950/30 border border-amber-500/30 p-4 rounded-2xl space-y-2">
                     <h3 class="font-bold text-amber-300 flex items-center gap-2 text-base">
                         <span>☕⚠️</span> Caffeine & Alcohol Cutoff Alarms:
@@ -446,7 +456,6 @@
                     <div id="caffeineAlerts" class="text-sm space-y-1.5 text-amber-200/90"></div>
                 </div>
 
-                <!-- Dönüş Rotası Planı -->
                 <div id="returnTripSection" class="hidden bg-indigo-950/30 border border-indigo-500/30 p-4 rounded-2xl space-y-2">
                     <h3 class="font-bold text-indigo-300 flex items-center gap-2 text-base">
                         <span>🔄</span> Return Route (Homebound) Adjustment Schedule:
@@ -454,7 +463,6 @@
                     <div id="returnTripPlan" class="text-sm space-y-1 text-indigo-200/90"></div>
                 </div>
 
-                <!-- Kişisel Seyahat / İlaç Notları Paneli -->
                 <div class="bg-violet-950/30 border border-violet-500/30 p-4 rounded-2xl space-y-2">
                     <h3 class="font-bold text-violet-300 flex items-center gap-2 text-base">
                         <span>📝</span> Personal Travel & Medication Notes (Saved in Browser):
@@ -462,7 +470,6 @@
                     <textarea id="customTravelNotes" oninput="safeSetItem('jetlag_custom_notes', this.value)" rows="3" placeholder="e.g., Take blood pressure medication at 09:00..." aria-label="Personal Travel Notes" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-violet-500 transition"></textarea>
                 </div>
 
-                <!-- Uçuş İçi DVT & Esneme Rehberi -->
                 <div class="bg-rose-950/30 border border-rose-500/30 p-4 rounded-2xl space-y-2">
                     <h3 class="font-bold text-rose-300 flex items-center gap-2 text-base">
                         <span>🧘‍♂️</span> In-Flight DVT (Blood Circulation) & Stretching Guide:
@@ -474,7 +481,6 @@
                     </div>
                 </div>
 
-                <!-- Şehre Özel Akıllı Valiz Listesi -->
                 <div class="bg-emerald-950/30 border border-emerald-500/30 p-4 rounded-2xl space-y-2">
                     <h3 class="font-bold text-emerald-300 flex items-center gap-2 text-base">
                         <span>🧳</span> City-Specific Smart Packing List:
@@ -583,7 +589,7 @@
         </section>
     </main>
 
-    <!-- FOOTER (Çalışan Kurumsal & Yasal Modallar) -->
+    <!-- FOOTER -->
     <footer class="w-full max-w-2xl text-center py-6 border-t border-slate-800 text-[11px] text-slate-500 space-y-3 z-10">
         <div class="flex items-center justify-center gap-4 flex-wrap">
             <button type="button" onclick="openLegalModal('privacy')" class="hover:text-slate-300 transition">Privacy Policy</button>
@@ -742,19 +748,62 @@
             document.getElementById('legalModal').classList.add('hidden');
         }
 
+        // B2B Partner & Otomatik Logo Çözümleyici
         (function checkB2BPartner() {
             try {
                 const params = new URLSearchParams(window.location.search);
                 const partner = params.get('partner');
-                const logo = params.get('logo');
-                if (partner) {
-                    document.getElementById('b2bPartnerName').textContent = partner;
-                    document.getElementById('b2bPartnerBanner').classList.remove('hidden');
-                    if (logo && /^https?:\/\//i.test(logo)) {
-                        const logoEl = document.getElementById('b2bPartnerLogo');
-                        logoEl.src = logo;
-                        logoEl.classList.remove('hidden');
+                const customLogo = params.get('logo');
+                if (!partner) return;
+
+                const partnerDomains = {
+                    'gazella': 'gazella.com',
+                    'antonina': 'antoninaturizm.com',
+                    'viking': 'vikingturizm.com.tr',
+                    'matilda': 'matildatravel.com',
+                    'sacred7': 'sacred7travel.com',
+                    'deepnature': 'deepnature.com.tr',
+                    'fut': 'futesports.gg',
+                    'bbl': 'bblesports.com',
+                    'efes': 'anadoluefessk.org',
+                    'lifeco': 'thelifeco.com',
+                    'setur': 'setur.com.tr',
+                    'pronto': 'prontotour.com',
+                    'jolly': 'jollytur.com'
+                };
+
+                document.getElementById('b2bPartnerName').textContent = partner;
+                document.getElementById('b2bPartnerBanner').classList.remove('hidden');
+
+                const logoEl = document.getElementById('b2bPartnerLogo');
+                const badgeEl = document.getElementById('b2bPartnerBadge');
+
+                const initials = partner.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+                badgeEl.textContent = initials || 'VIP';
+
+                let logoUrl = '';
+                if (customLogo && /^https?:\/\//i.test(customLogo)) {
+                    logoUrl = customLogo;
+                } else {
+                    const lower = partner.toLowerCase();
+                    const matchedKey = Object.keys(partnerDomains).find(k => lower.includes(k));
+                    if (matchedKey) {
+                        logoUrl = `https://www.google.com/s2/favicons?domain=${partnerDomains[matchedKey]}&sz=128`;
                     }
+                }
+
+                if (logoUrl) {
+                    logoEl.onload = () => {
+                        logoEl.classList.remove('hidden');
+                        badgeEl.classList.add('hidden');
+                    };
+                    logoEl.onerror = () => {
+                        logoEl.classList.add('hidden');
+                        badgeEl.classList.remove('hidden');
+                    };
+                    logoEl.src = logoUrl;
+                } else {
+                    badgeEl.classList.remove('hidden');
                 }
             } catch (e) {}
         })();
