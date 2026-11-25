@@ -1,27 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- 
-      NOTE FOR PRODUCTION: Tailwind CDN is used here for rapid prototyping. 
-      For production performance, compile Tailwind locally via Tailwind CLI:
-      npx @tailwindcss/cli -i ./input.css -o ./output.css --watch
-    -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jet Lag Calculator – Free Sleep, Light & Melatonin Plan for Any Flight</title>
     <meta name="description" content="Calculate your personalized jet lag recovery plan instantly. Get custom sleep schedules, melatonin timing, and light exposure guides for any global flight route.">
-    <link rel="canonical" href="https://SITEADIM.com/">
+    <link rel="canonical" href="https://jetlag-app-nu.vercel.app/">
 
     <!-- Open Graph / Social Media Meta Tags -->
     <meta property="og:title" content="Jet Lag Calculator – Free Sleep, Light & Melatonin Plan for Any Flight">
     <meta property="og:description" content="Beat jet lag with a customized sleep, melatonin, and light exposure schedule based on your flight route and chronotype.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://SITEADIM.com/">
-    <meta property="og:image" content="https://SITEADIM.com/og-image.jpg">
+    <meta property="og:url" content="https://jetlag-app-nu.vercel.app/">
+    <meta property="og:image" content="https://jetlag-app-nu.vercel.app/og-image.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Jet Lag Calculator – Free Sleep, Light & Melatonin Plan for Any Flight">
     <meta name="twitter:description" content="Calculate your personalized jet lag recovery plan instantly.">
-    <meta name="twitter:image" content="https://SITEADIM.com/og-image.jpg">
+    <meta name="twitter:image" content="https://jetlag-app-nu.vercel.app/og-image.jpg">
 
     <!-- Structured Data: WebApplication & FAQPage JSON-LD -->
     <script type="application/ld+json">
@@ -31,7 +26,7 @@
         {
           "@type": "WebApplication",
           "name": "JetLag & Global Rota",
-          "url": "https://SITEADIM.com/",
+          "url": "https://jetlag-app-nu.vercel.app/",
           "applicationCategory": "TravelApplication",
           "operatingSystem": "All",
           "offers": {
@@ -108,7 +103,6 @@
     <meta name="apple-mobile-web-app-title" content="JetLag Pro">
     <meta name="theme-color" content="#09090b">
     <style>
-        /* Google Çeviri Arka Plan & Mobil Kasma Engelleyici Özelleştirmeler */
         .goog-logo-link, .goog-te-banner-frame, .skiptranslate, #goog-gt-tt, .goog-te-balloon-frame, .goog-tooltip {
             display: none !important;
         }
@@ -122,7 +116,6 @@
             border: none !important;
             box-shadow: none !important;
         }
-        /* Özel Kaydırma Çubuğu */
         #langListContainer::-webkit-scrollbar { width: 5px; }
         #langListContainer::-webkit-scrollbar-track { background: #0f172a; border-radius: 8px; }
         #langListContainer::-webkit-scrollbar-thumb { background: #334155; border-radius: 8px; }
@@ -240,13 +233,25 @@
     <!-- ARKAPLAN KARARTMA PERDESİ -->
     <div id="drawerOverlay" onclick="toggleDrawer()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden transition-opacity"></div>
 
+    <!-- YASAL BİLGİ VE İLETİŞİM MODALI -->
+    <div id="legalModal" onclick="if(event.target===this) closeLegalModal()" class="hidden fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 id="legalModalTitle" class="font-bold text-white text-base"></h3>
+                <button onclick="closeLegalModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">✕</button>
+            </div>
+            <div id="legalModalBody" class="text-xs text-slate-300 space-y-2.5 leading-relaxed max-h-80 overflow-y-auto"></div>
+        </div>
+    </div>
+
     <!-- ANA KUTU -->
     <main class="w-full max-w-2xl my-8 z-10 space-y-8">
         <div class="bg-slate-900/90 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl border border-slate-800">
 
-            <!-- B2B Partner Banner -->
-            <div id="b2bPartnerBanner" class="hidden mb-6 bg-gradient-to-r from-indigo-600/30 to-cyan-600/30 border border-indigo-400/40 rounded-2xl p-3 text-center text-xs text-indigo-100 font-medium shadow-lg">
-                ✨ Official Smart Flight & Circadian Assistant provided by <strong id="b2bPartnerName" class="text-white underline"></strong>
+            <!-- B2B Kurumsal Partner Banner (Logo & İsim Destekli) -->
+            <div id="b2bPartnerBanner" class="hidden mb-6 bg-gradient-to-r from-indigo-600/30 to-cyan-600/30 border border-indigo-400/40 rounded-2xl p-3.5 text-center text-xs text-indigo-100 font-medium shadow-lg flex items-center justify-center gap-3 flex-wrap notranslate" translate="no">
+                <img id="b2bPartnerLogo" src="" alt="Partner Logo" class="hidden h-7 w-auto object-contain rounded-md bg-white/95 px-2 py-0.5 shadow" onerror="this.classList.add('hidden')">
+                <span>✨ <strong id="b2bPartnerName" class="text-white underline"></strong> misafirlerine özel Akıllı Uçuş & JetLag Asistanı</span>
             </div>
 
             <!-- Başlık -->
@@ -578,14 +583,14 @@
         </section>
     </main>
 
-    <!-- FOOTER (Dış linklerden arındırılmış, temiz sürüm) -->
+    <!-- FOOTER (Çalışan Kurumsal & Yasal Modallar) -->
     <footer class="w-full max-w-2xl text-center py-6 border-t border-slate-800 text-[11px] text-slate-500 space-y-3 z-10">
         <div class="flex items-center justify-center gap-4 flex-wrap">
-            <a href="#privacy" class="hover:text-slate-300 transition">Privacy Policy</a>
+            <button type="button" onclick="openLegalModal('privacy')" class="hover:text-slate-300 transition">Privacy Policy</button>
             <span>•</span>
-            <a href="#terms" class="hover:text-slate-300 transition">Terms of Use</a>
+            <button type="button" onclick="openLegalModal('terms')" class="hover:text-slate-300 transition">Terms of Use</button>
             <span>•</span>
-            <a href="#contact" class="hover:text-slate-300 transition">Contact</a>
+            <button type="button" onclick="openLegalModal('contact')" class="hover:text-slate-300 transition">Contact & B2B</button>
         </div>
         <p><strong>Medical Disclaimer:</strong> This web application is for informational and educational purposes only. It does not constitute medical advice. Always consult a professional physician regarding health conditions or medication use.</p>
         <p>© 2026 JetLag & Global Rota. All rights reserved.</p>
@@ -703,13 +708,53 @@
             document.getElementById('cookieBanner').classList.add('hidden');
         }
 
+        function openLegalModal(type) {
+            const modal = document.getElementById('legalModal');
+            const title = document.getElementById('legalModalTitle');
+            const body = document.getElementById('legalModalBody');
+
+            if (type === 'privacy') {
+                title.textContent = 'Privacy Policy';
+                body.innerHTML = `
+                    <p><strong>1. Local Data Storage:</strong> All flight routes, PNR codes, seat numbers, and personal travel notes are stored exclusively inside your own browser's <code>localStorage</code>. No personal flight data is uploaded to any central database.</p>
+                    <p><strong>2. Third-Party Services:</strong> Public airport coordinates, currency exchange rates, and live arrival weather are fetched via anonymized API requests.</p>
+                    <p><strong>3. Corporate Partner Links:</strong> When accessed via an authorized B2B partner link (<code>?partner=</code>), branding is displayed locally without tracking individual passenger identities.</p>
+                `;
+            } else if (type === 'terms') {
+                title.textContent = 'Terms of Use';
+                body.innerHTML = `
+                    <p><strong>1. Informational Purpose:</strong> JetLag & Global Rota provides circadian rhythm, sleep shifting, light exposure, and hydration estimates for general travel planning.</p>
+                    <p><strong>2. No Medical Advice:</strong> Recommendations regarding melatonin or supplements are educational and do not replace professional medical advice.</p>
+                    <p><strong>3. Commercial Licensing:</strong> Corporate white-label or partner distribution requires an active B2B license agreement.</p>
+                `;
+            } else if (type === 'contact') {
+                title.textContent = 'Contact & B2B Corporate Licensing';
+                body.innerHTML = `
+                    <p><strong>Corporate & Travel Agency Partnerships:</strong> Interested in offering a branded Smart Flight & Circadian Assistant to your passengers or athletes?</p>
+                    <p>• <strong>B2B Licensing & Pilot Program:</strong> Available for travel agencies, airlines, hotels, and esports/sports clubs.</p>
+                    <p>• <strong>Response Time:</strong> Within 24 hours via LinkedIn or corporate inquiry.</p>
+                `;
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeLegalModal() {
+            document.getElementById('legalModal').classList.add('hidden');
+        }
+
         (function checkB2BPartner() {
             try {
                 const params = new URLSearchParams(window.location.search);
                 const partner = params.get('partner');
+                const logo = params.get('logo');
                 if (partner) {
                     document.getElementById('b2bPartnerName').textContent = partner;
                     document.getElementById('b2bPartnerBanner').classList.remove('hidden');
+                    if (logo && /^https?:\/\//i.test(logo)) {
+                        const logoEl = document.getElementById('b2bPartnerLogo');
+                        logoEl.src = logo;
+                        logoEl.classList.remove('hidden');
+                    }
                 }
             } catch (e) {}
         })();
